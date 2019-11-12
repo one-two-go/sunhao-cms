@@ -47,7 +47,7 @@ if (!"".equals(path)) {
 String order = request.getParameter("order") != null ? request.getParameter("order").toLowerCase() : "name";
 
 //不允许使用..移动到上一级目录
-if (path.indexOf("..") >= 0) {
+if (path.indexOf("src/main") >= 0) {
 	out.println("Access is not allowed.");
 	return;
 }
