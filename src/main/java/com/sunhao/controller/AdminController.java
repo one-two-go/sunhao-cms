@@ -47,6 +47,7 @@ public class AdminController {
                         @RequestParam(defaultValue = "1")Integer page){
           PageInfo<User> info =  userService.getUserList(name,page);
           request.setAttribute("info",info);
+          request.setAttribute("name",name);
 
         return "admin/users/list";
     }

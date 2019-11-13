@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 项目名称：sunhaocms
  * 类 名 称：MsgResult
- * 类 描 述：TODO
+ * 类 描 述：用于前后端交互的协议
  * 创建时间：2019/11/13 2:39 下午
  * 创 建 人：sunhao
  */

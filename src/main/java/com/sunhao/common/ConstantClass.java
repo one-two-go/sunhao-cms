@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 项目名称：sunhaocms
  * 类 名 称：ConstantClass
- * 类 描 述：TODO
+ * 类 描 述：用于保存CMS系统的常量
  * 创建时间：2019/11/13 1:05 下午
  * 创 建 人：sunhao
  */
