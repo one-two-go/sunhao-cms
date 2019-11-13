@@ -21,7 +21,7 @@ public class UserController {
     public  String ConTest(HttpServletRequest request){
 
         request.setAttribute("info","hello");
-        return "user/list";
+        return "user/test";
     }
 
 }
