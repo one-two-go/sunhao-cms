@@ -10,7 +10,7 @@
         function (data) {
             if (data.result==1){
                 alert("恭喜 操作成功！！！！");
-                $("#content").load("/admin/users?name=${name}&page="+$("#searchName").val());
+                $("#content").load("/admin/users?name=${name}&page="+#{info.pageNum};
             }else {
                 alert("sorry,操作失败了呦！！");
                 alert(data.errorMsg)
