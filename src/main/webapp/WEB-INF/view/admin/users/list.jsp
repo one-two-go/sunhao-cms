@@ -10,16 +10,14 @@
         function (data) {
             if (data.result==1){
                 alert("恭喜 操作成功！！！！");
-                $("#content").load("/admin/users?name=${name}&page="+${info.pageNum});
+                $("#content").load("/admin/users?name=${name}&page="+$("#searchName").val());
             }else {
                 alert("sorry,操作失败了呦！！");
                 alert(data.errorMsg)
             }
-        },
-        )
-        
-    }
-    
+        },"json"
+      )}
+
 </script>
 
 <nav class="navbar navbar-default" role="navigation">
@@ -30,9 +28,9 @@
         <div>
             <form class="navbar-form navbar-left" role="search">
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input id="searchName" value="${name}" type="text" class="form-control" placeholder="Search"/>
                 </div>
-                <button type="submit" class="btn btn-default">查询</button>
+                <input type="button" class="btn btn-danger" onclick="search()" value="查询"/>
             </form>
         </div>
     </div>
@@ -105,7 +103,7 @@
             <li><a href="javascript:goPage(${index.index})">${index.index}</a></li>
         </c:if>
         <c:if test="${info.pageNum==index.index}">
-            <li><a href="javascript:void"><strong> ${index.index} </strong> </a></li>
+            <li><a href="javascript:"> <strong> ${index.index} </strong> </a></li>
         </c:if>
 
     </c:forEach>
@@ -116,6 +114,11 @@
     function goPage(page) {
         var url="/admin/users?page="+page+"&name=${name}";
         $("#content").load(url);
+    }
+
+
+    function search() {
+        $("#content").load("/admin/users?name=" + $("#searchName").val());
     }
 
 </script>
