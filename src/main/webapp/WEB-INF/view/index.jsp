@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8"%>
-<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
+         pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -13,12 +13,13 @@
     <script type="text/javascript" src="/resource/bootstrap/js/bootstrap.js"></script>
     <title>有花堪折直须折</title>
     <style type="text/css">
-        .menu li{
-            font-size:26px;
-            text-align:center;
+        .menu li {
+            font-size: 26px;
+            text-align: center;
         }
-        .menu li:hover{
-            background:gray;
+
+        .menu li:hover {
+            background: gray;
         }
 
 
@@ -38,10 +39,9 @@
         </a>
 
 
-
     </div>
 
-    <form class="navbar-form"  style="float:none;text-align:center;">
+    <form class="navbar-form" style="float:none;text-align:center;">
         <div class="form-group">
             <input type="text" class="form-control" placeholder="Search">
         </div>
@@ -49,17 +49,17 @@
     </form>
 
     <!-- 搜索框和右侧登录信息 -->
-    <div class="collapse navbar-collapse" style="float:none;text-align:right;"  id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" style="float:none;text-align:right;" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
 
         </ul>
 
 
-
-        <ul class="nav navbar-nav navbar-right" >
+        <ul class="nav navbar-nav navbar-right">
             <li><a href="#"><img width="40px" height="40px" src="/resource/images/donghua.gif"/> </a></li>
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                   aria-expanded="false">
                     张三 <span class="caret"></span></a>
                 <ul class="dropdown-menu ">
                     <li><a href="#">个人中心</a></li>
@@ -75,14 +75,14 @@
 
 </nav>
 
-<div class="container-fluid" >
-    <div class="container" style="minheight:200px" >
+<div class="container-fluid">
+    <div class="container" style="minheight:200px">
         <div class="row">
             <!-- 左侧菜单 -->
-            <div class="col-md-2" style="minheight:200px;margin-top:20px" >
+            <div class="col-md-2" style="minheight:200px;margin-top:20px">
 
                 <ul class="list-group menu">
-                    <li class="list-group-item active" >热门文章</li>
+                    <li class="list-group-item active">热门文章</li>
                     <c:forEach items="${channelList}" var="channel" varStatus="index">
                         <li class="list-group-item" data="/indexchn?id=${channel.id}">${channel.name}</li>
                     </c:forEach>
@@ -90,7 +90,7 @@
             </div>
 
             <!-- 中间的内容 -->
-            <div class="col-md-8" style="background:white;minheight:200px" >
+            <div class="col-md-8" style="background:white;minheight:200px">
                 <div>
                     <hr>
 
@@ -108,7 +108,7 @@
                         <div class="item active">
                             <img height="300px" src="/resource/images/donghua.gif" alt="First slide">
                         </div>
-                        <div  class="item">
+                        <div class="item">
                             <img height="300px" src="/resource/images/avatar1.jpg" alt="Second slide">
                         </div>
                         <div class="item">
@@ -126,29 +126,48 @@
                     </a>
                 </div>
                 <!-- 放文章的列表 -->
-                <div >
-                    <div class=row >
-                        <hr align="left" style="width:100%">
-                        <div class="col-md-4"><img height="50px" width="50px" src="/resource/images/avatar1.jpg"></div>
-                        <div class="col-md-8">
-                            文章大的吧i奥体11
-                        </div>
-                    </div>
-                    <div class=row>
-                        <hr>
-                        <div class="col-md-2"><img height="80px" width="80px" src="/resource/images/avatar1.jpg"></div>
-                        <div class="col-md-10">
-                            文章大的吧i奥体11
+                <div>
+                    <c:forEach items="${hotList.list}" var="hl">
+                        <div class=row>
+                            <hr align="left" style="width:100%">
+                            <div class="col-md-2"><img height="50px" width="80px" src="/resource/images/avatar1.jpg"></div>
+                            <div class="col-md-10">
+                                <a href="javascript:showArticle(${hl.id})">${hl.title}</a>
+                                <br>
+                                频道：<a>${hl.channel.name}</a>&nbsp;&nbsp;
+                                分类: <a>${hl.category.name}</a>
+                                <br/>
+                                <br>
+                                ${hl.user.username}&nbsp;发布于 <fmt:formatDate value="${hl.created}" pattern="yyyy-MM-dd"></fmt:formatDate>
+                            </div>
                         </div>
 
+                    </c:forEach>
+                    <div class="row">
+                        <ul class="pagination">
+                            <li><a href="/index?page=${hotList.prePage}">&laquo;</a></li>
+                            <c:forEach begin="${hotList.pageNum-2 > 1 ? hotList.pageNum-2:1}" end="${hotList.pageNum+2 > hotList.pages ? hotList.pages:hotList.pageNum+2}" varStatus="index">
+                                <c:if test="${hotList.pageNum!=index.index}">
+                                    <li><a href="/index?page=${index.index}">${index.index}</a></li>
+                                </c:if>
+                                <c:if test="${hotList.pageNum==index.index}">
+                                    <li><a href="javascript:"> <strong> ${index.index} </strong> </a></li>
+                                </c:if>
+
+                            </c:forEach>
+                            <li><a href="/index?page=${hotList.nextPage}">&raquo;</a></li>
+                        </ul>
                     </div>
+
+
+
                 </div>
 
             </div>
             <!-- 中间的内容结束 -->
 
 
-            <div class="col-md-2" style="minheight:200px" >
+            <div class="col-md-2" style="minheight:200px">
                 <div class="panel panel-primary">
                     <div class="panel-heading">
                         <h3 class="panel-title">面板标题</h3>
@@ -176,7 +195,6 @@
     </div>
 
 </div>
-
 
 
 <!-- 底部 -->
