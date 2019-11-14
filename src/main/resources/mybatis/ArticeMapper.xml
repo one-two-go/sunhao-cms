@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sunhao.dao.ArticeMapper">
+
+    <resultMap id="ArticeMapper" type="article">
+        <id column="id" property="id"></id>
+        <association property="user" column="user_id" select="com.sunhao.dao.UserMapper.getList"></association>
+        <association property="channel" column="channel_id" select="com.sunhao.dao.ChannelMapper.getList"></association>
+        <association property="category" column="category_id" select="com.sunhao.dao.CategoryMapper.getList"></association>
+
+    </resultMap>
+
+
+
+    <select id="getHotList" resultMap="ArticeMapper">
+    SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
+    FROM cms_article
+    where deleted = 0 and status= 1 and hot = 1
+
+    </select>
+
+    <select id="getnewArticle" resultType="article">
+        select id,title from cms_article where deleted = 0
+        and status = 1 ORDER BY created  DESC  limit #{value }
+    </select>
+
+</mapper>

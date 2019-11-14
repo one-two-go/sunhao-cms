@@ -18,4 +18,8 @@
         </where>
     </select>
 
+    <select id="getList" resultType="user">
+        select * from cms_user where id = #{value }
+    </select>
+
 </mapper>
