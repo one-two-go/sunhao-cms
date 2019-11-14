@@ -2,7 +2,7 @@ package service;
 
 import com.github.pagehelper.PageInfo;
 import com.sunhao.entity.Article;
-import com.sunhao.service.ArticeService;
+import com.sunhao.service.ArticleService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class ArticleTest extends BaseTest {
 
     @Autowired
-    ArticeService ArticeService;
+    ArticleService ArticeService;
 
     @Test
     public void test(){

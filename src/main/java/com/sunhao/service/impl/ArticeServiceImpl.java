@@ -5,7 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sunhao.common.ConstantClass;
 import com.sunhao.dao.ArticeMapper;
 import com.sunhao.entity.Article;
-import com.sunhao.service.ArticeService;
+import com.sunhao.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * 创 建 人：sunhao
  */
 @Service
-public class ArticeServiceImpl implements ArticeService {
+public class ArticeServiceImpl implements ArticleService {
 
     @Autowired
     ArticeMapper articeMapper;
@@ -34,4 +34,10 @@ public class ArticeServiceImpl implements ArticeService {
     public List<Article> getnewArticle(int i) {
         return articeMapper.getnewArticle(i);
     }
+
+    @Override
+    public Article getArticleByid(Integer id) {
+        return articeMapper.getArticleByid(id);
+    }
+
 }

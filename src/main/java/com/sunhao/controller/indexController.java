@@ -3,7 +3,7 @@ package com.sunhao.controller;
 import com.github.pagehelper.PageInfo;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Channel;
-import com.sunhao.service.ArticeService;
+import com.sunhao.service.ArticleService;
 import com.sunhao.service.ChannelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,22 +28,31 @@ public class indexController {
     ChannelService channelService;
 
     @Autowired
-    ArticeService articeService;
+    ArticleService articeService;
 
-    @RequestMapping(value = {"/","index"})
+    @RequestMapping(value = {"/", "index"})
     public String index(HttpServletRequest request,
-                        @RequestParam(defaultValue = "1") Integer page){
+                        @RequestParam(defaultValue = "1") Integer page) {
+        /**
+         *
+         * @param request
+         * @param chnId  频道id
+         * @param page  文章页码
+         * @return
+         */
+
+
         /**
          * 获取频道
          */
-     List<Channel> channelList = channelService.getChannelList();
-     request.setAttribute("channelList",channelList);
+        List<Channel> channelList = channelService.getChannelList();
+        request.setAttribute("channelList", channelList);
         /**
          * 获取热门文章列表
          */
 
-        PageInfo<Article> hotList= articeService.getHotList(page);
-        request.setAttribute("hotList",hotList);
+        PageInfo<Article> hotList = articeService.getHotList(page);
+        request.setAttribute("hotList", hotList);
 
 
         /**
@@ -51,7 +60,7 @@ public class indexController {
          */
         List<Article> newArticle = articeService.getnewArticle(5);
 
-        request.setAttribute("newArticle",newArticle);
-    return "index";
+        request.setAttribute("newArticle", newArticle);
+        return "index";
     }
 }

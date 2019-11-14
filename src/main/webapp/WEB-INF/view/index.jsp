@@ -136,6 +136,8 @@
                                 <br>
                                 频道：<a>${hl.channel.name}</a>&nbsp;&nbsp;
                                 分类: <a>${hl.category.name}</a>
+                                <br>
+                                <!--内容：<a>${hl.content}</a> -->
                                 <br/>
                                 <br>
                                 ${hl.user.username}&nbsp;发布于 <fmt:formatDate value="${hl.created}" pattern="yyyy-MM-dd"></fmt:formatDate>
@@ -202,6 +204,12 @@
     <div class="container-fluid">
     </div>
 </nav>
+
+<script type="text/javascript">
+    function showArticle(articleId) {
+        window.open("/article/detail?id="+articleId);
+    }
+</script>
 
 </body>
 </html>

@@ -17,4 +17,6 @@ public interface ArticeMapper {
     List<Article> getHotList();
 
     List<Article> getnewArticle(int i);
+
+    Article getArticleByid(Integer id);
 }

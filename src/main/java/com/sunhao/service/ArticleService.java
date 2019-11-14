@@ -14,8 +14,10 @@ import java.util.List;
  * 创 建 人：sunhao
  */
 
-public interface ArticeService {
+public interface ArticleService {
     PageInfo<Article> getHotList(Integer page);
 
     List<Article> getnewArticle(int i);
+
+    Article getArticleByid(Integer id);
 }
