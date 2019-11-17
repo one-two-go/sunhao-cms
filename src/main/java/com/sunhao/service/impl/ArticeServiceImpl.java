@@ -40,4 +40,10 @@ public class ArticeServiceImpl implements ArticleService {
         return articeMapper.getArticleByid(id);
     }
 
+    @Override
+    public PageInfo<Article> listBycateId(int chnId, int categoryId, Integer page) {
+        PageHelper.startPage(page,ConstantClass.PAGE_SIZE);
+        return new PageInfo<Article>(articeMapper.listBycateId(chnId,categoryId,page));
+    }
+
 }

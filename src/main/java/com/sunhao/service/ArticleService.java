@@ -20,4 +20,7 @@ public interface ArticleService {
     List<Article> getnewArticle(int i);
 
     Article getArticleByid(Integer id);
+
+
+    PageInfo<Article> listBycateId(int chnId, int categoryId, Integer page);
 }

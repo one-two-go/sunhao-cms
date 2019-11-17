@@ -23,13 +23,24 @@
 
     <select id="getnewArticle" resultType="article">
         select id,title from cms_article where deleted = 0
-        and status = 1 ORDER BY created  DESC  limit #{value }
+        and status = 1
+        ORDER BY created  DESC  limit #{value }
     </select>
 
     <select id="getArticleByid" resultType="article">
     SELECT title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
     FROM cms_article
     where deleted = 0 and status= 1 and hot = 1 and  id = #{value }
+    </select>
+
+    <select id="listBycateId" resultMap="ArticeMapper">
+        	SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
+        	FROM cms_article WHERE deleted = 0 AND status = 1 AND channel_id = #{chnId}
+            <if test="categoryId !=0">
+                AND channel_id = #{categoryId}
+            </if>
+             ORDER BY created DESC
+
     </select>
 
 </mapper>

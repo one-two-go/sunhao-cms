@@ -1,6 +1,7 @@
 package com.sunhao.dao;
 
 import com.sunhao.entity.Article;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ArticeMapper {
     List<Article> getnewArticle(int i);
 
     Article getArticleByid(Integer id);
+
+    List<Article> listBycateId(@Param("chnId") int chnId, @Param("categoryId") int categoryId, @Param("page") Integer page);
 }

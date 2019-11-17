@@ -7,4 +7,8 @@
     <select id="getList" resultType="category">
         SELECT * FROM cms_category WHERE id= #{value}
     </select>
+
+    <select id="getCateByChnId" resultType="category">
+        SELECT * FROM cms_category WHERE channl_id= #{value }
+    </select>
 </mapper>

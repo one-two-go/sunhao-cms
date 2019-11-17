@@ -84,7 +84,7 @@
                 <ul class="list-group menu">
                     <li class="list-group-item active">热门文章</li>
                     <c:forEach items="${channelList}" var="channel" varStatus="index">
-                        <li class="list-group-item" data="/indexchn?id=${channel.id}">${channel.name}</li>
+                        <li class="list-group-item" data="/channel?chnId=${channel.id}" >${channel.name}</li>
                     </c:forEach>
                 </ul>
             </div>
