@@ -17,6 +17,8 @@ public class ConstantClass  {
     //管理员
     public  static final int USER_ROLE_ADMIN=1;
 
+    public static final String USER_KEY="SESSION_USER_KEY";
+
     /**
      * 分页页数
      */

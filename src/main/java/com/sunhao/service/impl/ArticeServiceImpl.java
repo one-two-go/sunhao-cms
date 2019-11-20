@@ -46,4 +46,21 @@ public class ArticeServiceImpl implements ArticleService {
         return new PageInfo<Article>(articeMapper.listBycateId(chnId,categoryId,page));
     }
 
+    @Override
+    public PageInfo<Article> listByUser(int page, Integer UserId) {
+        PageHelper.startPage(page,ConstantClass.PAGE_SIZE);
+
+        return new PageInfo<Article>(articeMapper.listByUser(UserId));
+    }
+
+    @Override
+    public Article checkExist(Integer id) {
+        return articeMapper.checkExist(id);
+    }
+
+    @Override
+    public int delete(Integer id) {
+        return articeMapper.delete(id);
+    }
+
 }

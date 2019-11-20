@@ -43,4 +43,12 @@
 
     </select>
 
+<!--    根据用户获取地址-->
+    <select id="listByUser" resultMap="ArticeMapper">
+    SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt,status
+    FROM cms_article
+    where deleted = 0   and  user_id = #{value }
+    ORDER BY created DESC
+    </select>
+
 </mapper>

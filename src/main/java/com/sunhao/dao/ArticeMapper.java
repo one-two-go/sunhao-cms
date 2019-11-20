@@ -2,7 +2,9 @@ package com.sunhao.dao;
 
 import com.sunhao.entity.Article;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -22,4 +24,13 @@ public interface ArticeMapper {
     Article getArticleByid(Integer id);
 
     List<Article> listBycateId(@Param("chnId") int chnId, @Param("categoryId") int categoryId, @Param("page") Integer page);
+
+    List<Article> listByUser(Integer userId);
+
+    @Select("SELECT * FROM cms_article where id = #{id}")
+    @ResultType(Article.class)
+    Article checkExist(Integer id);
+
+    @Update("update cms_article set deleted =1 where id=#{id}")
+    int delete(Integer id);
 }

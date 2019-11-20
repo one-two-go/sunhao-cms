@@ -23,4 +23,10 @@ public interface ArticleService {
 
 
     PageInfo<Article> listBycateId(int chnId, int categoryId, Integer page);
+
+    PageInfo<Article> listByUser(int page, Integer UserId);
+
+    Article checkExist(Integer id);
+
+    int delete(Integer id);
 }

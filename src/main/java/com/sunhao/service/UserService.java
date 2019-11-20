@@ -34,4 +34,10 @@ public interface UserService {
      * @return
      */
     int updateStatus(Integer userId, int status);
+
+    int register(User user);
+
+    User findUserByName(String username);
+
+    User login(User user);
 }

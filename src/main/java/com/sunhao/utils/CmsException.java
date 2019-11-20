@@ -1,7 +1,7 @@
 package com.sunhao.utils;
 
 /**
- * 自定义异常
+ *
  * @author zhuzg
  *
  */
