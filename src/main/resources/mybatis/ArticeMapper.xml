@@ -18,7 +18,7 @@
     SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
     FROM cms_article
     where deleted = 0 and status= 1 and hot = 1
-
+    ORDER BY created  DESC
     </select>
 
     <select id="getnewArticle" resultType="article">
@@ -28,9 +28,10 @@
     </select>
 
     <select id="getArticleByid" resultType="article">
-    SELECT title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
+    SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
     FROM cms_article
     where deleted = 0 and status= 1 and hot = 1 and  id = #{value }
+    ORDER BY created  DESC
     </select>
 
     <select id="listBycateId" resultMap="ArticeMapper">
@@ -51,4 +52,19 @@
     ORDER BY created DESC
     </select>
 
+
+    <select id="getPageList" resultMap="ArticeMapper">
+        SELECT id,title,picture,channel_id,category_id,hits,commentCnt,created,status,user_id
+        FROM cms_article
+        WHERE deleted=0
+        <if test="value != -1 ">
+            AND status = #{value}
+        </if>
+        ORDER BY created DESC
+    </select>
+
+    <select id="getDetailById" resultMap="ArticeMapper">
+         select * from cms_article where deleted = 0
+        AND id = #{id}  ORDER BY created  DESC
+    </select>
 </mapper>

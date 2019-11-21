@@ -25,6 +25,12 @@ public class ArticeServiceImpl implements ArticleService {
     ArticeMapper articeMapper;
 
     @Override
+    public PageInfo<Article> getPageList(int page, int status) {
+        PageHelper.startPage(page,ConstantClass.PAGE_SIZE);
+        return new PageInfo<Article>(articeMapper.getPageList(status));
+    }
+
+    @Override
     public PageInfo<Article> getHotList(Integer page) {
         PageHelper.startPage(page, ConstantClass.PAGE_SIZE);
         return new PageInfo<Article>(articeMapper.getHotList());
@@ -61,6 +67,26 @@ public class ArticeServiceImpl implements ArticleService {
     @Override
     public int delete(Integer id) {
         return articeMapper.delete(id);
+    }
+
+    @Override
+    public int add(Article article) {
+        return articeMapper.add(article);
+    }
+
+    @Override
+    public Article getDetailById(Integer id) {
+        return articeMapper.getDetailById(id);
+    }
+
+    @Override
+    public int apply(int id, int status) {
+        return articeMapper.apply(id,status);
+    }
+
+    @Override
+    public int setHot(int id, int status) {
+        return articeMapper.setHot(id,status);
     }
 
 }

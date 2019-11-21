@@ -9,6 +9,6 @@
     </select>
 
     <select id="getCateByChnId" resultType="category">
-        SELECT * FROM cms_category WHERE channl_id= #{value }
+        SELECT * FROM cms_category WHERE channel_id= #{value }
     </select>
 </mapper>

@@ -15,7 +15,7 @@
  * 
  */
 
-//文件保存目录路径
+//文件保存目录路径  todo
 //String savePath = pageContext.getServletContext().getRealPath("/") + "pic/";
 String savePath ="d:/pic/";
 //文件保存目录URL

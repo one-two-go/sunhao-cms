@@ -15,6 +15,9 @@ import java.util.List;
  */
 
 public interface ArticleService {
+
+    PageInfo<Article> getPageList(int page, int status);
+
     PageInfo<Article> getHotList(Integer page);
 
     List<Article> getnewArticle(int i);
@@ -29,4 +32,12 @@ public interface ArticleService {
     Article checkExist(Integer id);
 
     int delete(Integer id);
+
+    int add(Article article);
+
+    Article getDetailById(Integer id);
+
+    int apply(int id, int status);
+
+    int setHot(int id, int status);
 }

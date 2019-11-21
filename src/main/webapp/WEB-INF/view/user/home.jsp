@@ -27,7 +27,16 @@
                 <li class="list-group-item list-group-item-info">个人设置</li>
             </ul>
         </div>
-        <div class="col-md-9" id="content">
+        <div class="col-md-9" id="content"
+             style="border:solid;min-height:500px;background-color:#FFFFFF;
+		   overflow-x:scroll;overflow-y:scroll
+		   ">
+
+            <div id="kindEditor" style="display: none">
+                <!-- 引入kindEditor的样式 -->
+                <jsp:include page="/resource/kindeditor/jsp/demo.jsp"></jsp:include>
+            </div>
+
 
         </div>
     </div>

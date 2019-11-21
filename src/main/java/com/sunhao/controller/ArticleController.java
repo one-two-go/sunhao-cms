@@ -1,10 +1,14 @@
 package com.sunhao.controller;
 
+import com.sunhao.common.MsgResult;
 import com.sunhao.entity.Article;
+import com.sunhao.entity.Category;
 import com.sunhao.service.ArticleService;
+import com.sunhao.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,6 +26,8 @@ public class ArticleController {
 
     @Autowired
     ArticleService articleService;
+    @Autowired
+    CategoryService categoryService;
 
     @RequestMapping("detail")
     public String getArticleByid(HttpServletRequest request,Integer id){
@@ -29,5 +35,15 @@ public class ArticleController {
         request.setAttribute("article",article);
         return "article/detail";
     }
+
+    //按频道获取类别
+    @RequestMapping("getCategoryByChannel")
+    @ResponseBody
+    public MsgResult getCategoryByChannel(int chnId){
+     List<Category> categories = categoryService.getCateByChnId(chnId);
+        return new MsgResult(1,"",categories);
+    }
+
+
 
 }

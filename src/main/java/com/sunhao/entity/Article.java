@@ -259,4 +259,5 @@ public class Article implements Serializable {
     public int hashCode() {
         return Objects.hash(id, title, content, picture, channelId, channel, categoryId, category, userId, user, hits, hot, status, deleted, created, updated, commentCnt, articleType);
     }
+
 }

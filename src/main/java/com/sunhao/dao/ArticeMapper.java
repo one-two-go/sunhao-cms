@@ -1,10 +1,7 @@
 package com.sunhao.dao;
 
 import com.sunhao.entity.Article;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.ResultType;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -33,4 +30,28 @@ public interface ArticeMapper {
 
     @Update("update cms_article set deleted =1 where id=#{id}")
     int delete(Integer id);
+
+    @Insert("INSERT INTO cms_article("
+            + " title,content,picture,channel_id,category_id,"
+            + " user_id,hits,hot,status,deleted,"
+            + " created,updated,commentCnt,articleType) "
+            + " values(#{title},#{content},#{picture},#{channelId},#{categoryId}," +
+            "#{userId},#{hits},#{hot},#{status},#{deleted}," +
+            "now(),now(),#{commentCnt},#{articleType})")
+    int add(Article article);
+
+    List<Article> getPageList(int status);
+
+    /**
+     * 获取文章详情 不考虑状态
+     * @param id
+     * @return
+     */
+    Article getDetailById(Integer id);
+
+    @Update("UPDATE cms_article SET status = #{status} WHERE id = #{id}")
+    int apply(@Param("id") int id, @Param("status")int status);
+
+    @Update("UPDATE cms_article SET hot=#{status} WHERE id = #{id}")
+    int setHot(@Param("id") int id, @Param("status") int status);
 }

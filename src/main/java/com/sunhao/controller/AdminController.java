@@ -3,8 +3,11 @@ package com.sunhao.controller;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.pagehelper.PageInfo;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
+import com.sunhao.common.CmsAssert;
 import com.sunhao.common.MsgResult;
+import com.sunhao.entity.Article;
 import com.sunhao.entity.User;
+import com.sunhao.service.ArticleService;
 import com.sunhao.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,15 +34,14 @@ public class AdminController {
     @Autowired
     UserService userService;
 
+    @Autowired
+    ArticleService articleService;
+
     @RequestMapping("index")
     public String index(){
         return "admin/index";
     }
 
-    @RequestMapping("articles")
-    public String articles(){
-        return "admin/articles/list";
-    }
 
     @RequestMapping("users")
     public String users(HttpServletRequest request,
@@ -75,6 +77,60 @@ public class AdminController {
         }
 
     }
+
+    @RequestMapping("articles")
+    public String articles(HttpServletRequest request,
+             @RequestParam(defaultValue = "1") Integer page,
+             @RequestParam(defaultValue = "-1") int status){
+
+        PageInfo<Article> pageInfo = articleService.getPageList(page,status);
+
+        request.setAttribute("pageInfo",pageInfo);
+        request.setAttribute("status",status);
+        return   "admin/articles/list" ;
+    }
+
+
+    @RequestMapping("getArticle")
+    @ResponseBody
+    public MsgResult getArticle(Integer id){
+        Article article = articleService.getDetailById(id);
+        CmsAssert.AssertTrue(article!=null,"文章不存在！！！");
+
+        return new MsgResult(1,"获取成功",article);
+    }
+
+    @RequestMapping("applyArticle")
+    @ResponseBody
+    public MsgResult applyArticle(int id,int status){
+        Article article = articleService.checkExist(id);
+        CmsAssert.AssertTrue(article!=null,"文章已经不存在！！");
+        int result = articleService.apply(id,status);
+        if(result>0 ){
+            return new MsgResult(1,"处理成功",null);
+        }else {
+            return new MsgResult(2,"处理失败",null);
+        }
+
+    }
+    @RequestMapping("setArticleHot")
+    @ResponseBody
+    public MsgResult setHot(int id,int status){
+       Article article =  articleService.checkExist(id);
+       CmsAssert.AssertTrue(article!=null,"文章不存在！！");
+       int result =  articleService.setHot(id,status);
+        System.out.println(result+"++++++");
+       if(result>0){
+           return  new MsgResult(1,"操作成功！！",null);
+       }else {
+           return  new MsgResult(2,"操作失败！！",null);
+       }
+
+    }
+
+
+
+
 
 
 }

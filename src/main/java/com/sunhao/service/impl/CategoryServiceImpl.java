@@ -24,4 +24,5 @@ public class CategoryServiceImpl  implements CategoryService {
     public List<Category> getCateByChnId(int chnId) {
         return categoryMapper.getCateByChnId(chnId);
     }
+
 }

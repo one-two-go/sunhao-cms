@@ -43,10 +43,15 @@ public class indexController {
      * @return
      */
     @RequestMapping( "channel")
+
     public String channel(HttpServletRequest request,
                         @RequestParam(defaultValue = "") int chnId,
                         @RequestParam(defaultValue = "") int categoryId,
                         @RequestParam(defaultValue = "1") Integer page) {
+
+        // 回传参数数值
+        request.setAttribute("chnId", chnId);
+        request.setAttribute("categoryId", categoryId);
         /**
          * 获取频道
          */

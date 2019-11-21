@@ -15,4 +15,5 @@ public interface CategoryService {
 
 
     List<Category> getCateByChnId(int chnId);
+
 }
