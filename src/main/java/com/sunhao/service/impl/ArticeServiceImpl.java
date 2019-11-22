@@ -104,5 +104,15 @@ public class ArticeServiceImpl implements ArticleService {
         return articeMapper.favorite(UserId,articleId);
     }
 
+    /**
+     * 获取十篇文章信息
+     * @param num
+     * @return
+     */
+    @Override
+    public List<Article> getImgArticles(int num) {
+        return articeMapper.getImgArticles(num);
+    }
+
 
 }

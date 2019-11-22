@@ -1,14 +1,12 @@
 package com.sunhao.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.google.gson.Gson;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 import com.sunhao.common.CmsAssert;
 import com.sunhao.common.ConstantClass;
 import com.sunhao.common.MsgResult;
-import com.sunhao.entity.Article;
-import com.sunhao.entity.Category;
-import com.sunhao.entity.Channel;
-import com.sunhao.entity.User;
+import com.sunhao.entity.*;
 import com.sunhao.service.ArticleService;
 import com.sunhao.service.CategoryService;
 import com.sunhao.service.ChannelService;
@@ -28,6 +26,7 @@ import javax.validation.constraints.AssertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -70,21 +69,70 @@ public class UserController {
 
     @RequestMapping("favorite")
     @ResponseBody
-    public MsgResult favorite(HttpServletRequest request,Integer id){
+    public MsgResult favorite(HttpServletRequest request, Integer id) {
 
-        System.out.println(id+"+++++++");
+        System.out.println(id + "+++++++");
         //判断传入的id和用户是否可以
-        CmsAssert.AssertTrue(id>0,"文章ID不符合呢");
+        CmsAssert.AssertTrue(id > 0, "文章ID不符合呢");
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-        CmsAssert.AssertTrue(loginUser!=null,"请您先登陆呢");
+        CmsAssert.AssertTrue(loginUser != null, "请您先登陆呢");
 
-        int result = articleService.favorite(loginUser.getId(),id);
+        int result = articleService.favorite(loginUser.getId(), id);
 
-        CmsAssert.AssertTrue(result>0,"收藏失败了");
+        CmsAssert.AssertTrue(result > 0, "收藏失败了");
 
 
-        return new MsgResult(1,"恭喜，收藏成功了",null);
+        return new MsgResult(1, "恭喜，收藏成功了", null);
     }
+
+    /**
+     * 发布图片
+     */
+    @GetMapping("postImg")
+        public String postImg(HttpServletRequest request){
+        //获取所有频道
+        List<Channel> channels = channelService.getChannelList();
+        request.setAttribute("channels",channels);
+
+        return "/article/postImg";
+    }
+
+    @PostMapping("postImg")
+    public MsgResult postImg(HttpServletRequest request,MultipartFile file[],
+                             String desc[], Article article) throws IOException {
+
+        //  获取用户的信息
+        User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
+
+        List<Image> list = new ArrayList<>();
+        //便利处理每个上传的图片，存入list中
+        for (int i=0;i<file.length&&i<desc.length;i++){
+            String url = processFile(file[i]);
+            Image image = new Image();
+            image.setDesc(desc[i]);
+            image.setUrl(url);
+            list.add(image);
+        }
+        //GSON来操作java对象和json数据之间的相互转换
+        Gson gson = new Gson();
+
+        //设置作者
+        article.setUserId(loginUser.getId());
+        article.setContent(gson.toJson(list));
+        //设置文章类型 是图片
+        article.setArticleType(TypeEnum.IMG);
+        int add = articleService.add(article);
+        if(add>0){
+            return new MsgResult(1,"恭喜呢，发布成功",null);
+        }else {
+            return  new MsgResult(2,"不好意思，发布失败了",null);
+        }
+    }
+
+
+
+
+
 
     /**
      * 跳转到注册页面
@@ -155,13 +203,14 @@ public class UserController {
     public String myarticles(HttpServletRequest request, @RequestParam(defaultValue = "1") int page) {
 
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-       PageInfo<Article> pageInfo = articleService.listByUser(page, loginUser.getId());
+        PageInfo<Article> pageInfo = articleService.listByUser(page, loginUser.getId());
         request.setAttribute("pageInfo", pageInfo);
         return "user/myarticles";
     }
 
     /**
      * 删除用户的文章
+     *
      * @param request
      * @param id
      * @return
@@ -175,10 +224,10 @@ public class UserController {
         CmsAssert.AssertTrue(article != null, "该文章已经不存在");
         //获取当前用户的session key
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-        System.out.println("+++++++"+loginUser.getId()+"============");
-        System.out.println("+++++++"+loginUser+"============");
+        System.out.println("+++++++" + loginUser.getId() + "============");
+        System.out.println("+++++++" + loginUser + "============");
 
-        System.out.println("+++++++"+ article +"++++++=====");
+        System.out.println("+++++++" + article + "++++++=====");
 //        +++++++57============
 //        +++++++User{id=57, username='wucaicai', password='41c810756567d3ef6c6fd2ebf8caf4f9', nickname='null', birthday=null, gender=1, locked=0, createTime=null, updateTime=null, url='', score=0, role=0}============
 //        +++++++Article{id=29, title='v', content='&nbsp;飞', picture='a29bde7b-6da0-473f-86ab-567950f9888d.jpg', channelId=null, channel=null, categoryId='null', category=null, userId=null, user=null, hits=0, hot=0, status=1, deleted=0, created='Sun Sep 22 21:00:46 CST 2019', updated=Mon Sep 23 14:10:00 CST 2019, commentCnt=1, articleType=0}++++++=====
@@ -197,44 +246,42 @@ public class UserController {
      * updateArticle
      * 修改用户的文章
      */
-    @RequestMapping(value = "updateArticle",method = RequestMethod.GET)
-    public String updateArticle(HttpServletRequest request,int id){
-         //获取文章详情，用于回显  不考虑状态，只判断是否删除
+    @RequestMapping(value = "updateArticle", method = RequestMethod.GET)
+    public String updateArticle(HttpServletRequest request, int id) {
+        //获取文章详情，用于回显  不考虑状态，只判断是否删除
         Article article = articleService.getDetailById(id);
-        request.setAttribute("article",article);
+        request.setAttribute("article", article);
 
-        request.setAttribute("content1",htmlspecialchars(article.getContent()));
+        request.setAttribute("content1", htmlspecialchars(article.getContent()));
 
         //获取所用的频道信息
-        List<Channel> channels=  channelService.getChannelList();
+        List<Channel> channels = channelService.getChannelList();
         System.out.println(channels);
-        request.setAttribute("channels",channels);
+        request.setAttribute("channels", channels);
 
         return "article/update";
     }
 
-    @RequestMapping(value = "updateArticle",method = RequestMethod.POST)
+    @RequestMapping(value = "updateArticle", method = RequestMethod.POST)
     @ResponseBody
-    public MsgResult updateArticle(HttpServletRequest request,MultipartFile file,Article article) throws IOException {
+    public MsgResult updateArticle(HttpServletRequest request, MultipartFile file, Article article) throws IOException {
         //  1。先判断文章id是否存在 2。当前用户是否有权限修改这个文章
 
         //判断图片 ，替换图片新的
-        if(!file.isEmpty()){
+        if (!file.isEmpty()) {
             String picUrl = processFile(file);
             article.setPicture(picUrl);
         }
 
         int result = articleService.update(article);
-        if (result>0){
-            return new MsgResult(1,"",null);
-        }else {
-            return new MsgResult(2,"",null);
+        if (result > 0) {
+            return new MsgResult(1, "", null);
+        } else {
+            return new MsgResult(2, "", null);
         }
 
 
     }
-
-
 
 
     /**
@@ -243,44 +290,46 @@ public class UserController {
      */
 
     @GetMapping("postArticle")
-    public  String postArticle(HttpServletRequest request){
+    public String postArticle(HttpServletRequest request) {
 
         //获取所有频道
         List<Channel> channels = channelService.getChannelList();
-        request.setAttribute("channels",channels);
+        request.setAttribute("channels", channels);
 
         return "article/publish";
     }
+
     @PostMapping("postArticle")
     @ResponseBody
-    public MsgResult postArticle(HttpServletRequest request, MultipartFile file,Article article) throws IOException {
-        if(!file.isEmpty()){
-           String fileUrl =  processFile(file);
-           article.setPicture(fileUrl);
+    public MsgResult postArticle(HttpServletRequest request, MultipartFile file, Article article) throws IOException {
+        if (!file.isEmpty()) {
+            String fileUrl = processFile(file);
+            article.setPicture(fileUrl);
         }
-        User loginUser  = (User)request.getSession().getAttribute(ConstantClass.USER_KEY);
+        User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
 
         article.setUserId(loginUser.getId());
         int result = articleService.add(article);
-        if (result>0){
-            return new MsgResult(1,"文章发布成功！！！",null);
-        }else {
-            return new MsgResult(2,"文章发布失败！！！",null);
+        if (result > 0) {
+            return new MsgResult(1, "文章发布成功！！！", null);
+        } else {
+            return new MsgResult(2, "文章发布失败！！！", null);
         }
 
     }
 
     /**
      * 保存文件的相对路径
+     *
      * @param file
      * @return
      */
     private String processFile(MultipartFile file) throws IOException {
-       // 求文件扩展名 xxx.jsp
-       String suffixName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        // 求文件扩展名 xxx.jsp
+        String suffixName = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 
-       String fileNamePre = UUID.randomUUID().toString();
-       // 计算出新的文件名称
+        String fileNamePre = UUID.randomUUID().toString();
+        // 计算出新的文件名称
 
         String fileName = fileNamePre + suffixName;
 
@@ -289,15 +338,15 @@ public class UserController {
 
         File pathFile = new File(uploadPath + "/" + path);
 
-        if (!pathFile.exists()){
+        if (!pathFile.exists()) {
             pathFile.mkdirs();
         }
 
         //最终的 新的 文件名称
-        String newFileName=uploadPath+"/"+path+fileName;
+        String newFileName = uploadPath + "/" + path + fileName;
         file.transferTo(new File(newFileName));
 
-        return path+"/"+fileName;
+        return path + "/" + fileName;
 
     }
 
@@ -316,7 +365,7 @@ public class UserController {
 
     //退出登陆
     @RequestMapping("logout")
-    public String logout(HttpServletRequest request){
+    public String logout(HttpServletRequest request) {
         request.getSession().removeAttribute(ConstantClass.USER_KEY);
         return "redirect:/";
     }

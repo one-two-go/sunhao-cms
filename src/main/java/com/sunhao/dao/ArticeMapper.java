@@ -1,7 +1,10 @@
 package com.sunhao.dao;
 
+import com.fasterxml.jackson.databind.JavaType;
 import com.sunhao.entity.Article;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.TypeHandler;
 
 import java.util.List;
 
@@ -24,7 +27,7 @@ public interface ArticeMapper {
 
     List<Article> listByUser(Integer userId);
 
-    @Select("SELECT * FROM cms_article where id = #{id}")
+    @Select("SELECT id, title, content, picture, channel_id, category_id, user_id, hits, hot, status, deleted, created, updated, commentCnt FROM cms_article where id = #{id}")
     @ResultType(Article.class)
     Article checkExist(Integer id);
 
@@ -35,10 +38,14 @@ public interface ArticeMapper {
             + " title,content,picture,channel_id,category_id,"
             + " user_id,hits,hot,status,deleted,"
             + " created,updated,commentCnt,articleType) "
-            + " values(#{title},#{content},#{picture},#{channelId},#{categoryId}," +
-            "#{userId},#{hits},#{hot},#{status},#{deleted}," +
-            "now(),now(),#{commentCnt},#{articleType})")
+            + " values("
+            + " #{title},#{content},#{picture},#{channelId},#{categoryId},"
+            + "#{userId},#{hits},#{hot},#{status},#{deleted},"
+            + "now(),now(),#{commentCnt},"
+            + "#{articleType,typeHandler=org.apache.ibatis.type.EnumOrdinalTypeHandler,"
+            + "jdbcType=INTEGER,javaType=com.sunhao.entity.TypeEnum})")
     int add(Article article);
+
 
     List<Article> getPageList(int status);
 
@@ -62,4 +69,6 @@ public interface ArticeMapper {
 
     @Insert("REPLACE cms_favorite(user_id,article_id,created) values(#{userId},#{articleId},now())")
     int favorite(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
+
+    List<Article> getImgArticles(int num);
 }

@@ -2,6 +2,7 @@ package com.sunhao.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,8 +56,20 @@ public class Article implements Serializable {
 
     // 评论的数量
     private int commentCnt       ;
+
+    // 该文章的所有的图片
+    private List<Image> imgList;
+
+    public List<Image> getImgList() {
+        return imgList;
+    }
+
+    public void setImgList(List<Image> imgList) {
+        this.imgList = imgList;
+    }
+
     //文章类型
-    private int articleType      ;
+    private TypeEnum  articleType  = TypeEnum.HTML    ;
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
@@ -198,11 +211,11 @@ public class Article implements Serializable {
         this.commentCnt = commentCnt;
     }
 
-    public int getArticleType() {
+    public TypeEnum getArticleType() {
         return articleType;
     }
 
-    public void setArticleType(int articleType) {
+    public void setArticleType(TypeEnum articleType) {
         this.articleType = articleType;
     }
 

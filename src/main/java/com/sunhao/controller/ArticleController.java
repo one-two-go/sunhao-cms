@@ -1,9 +1,12 @@
 package com.sunhao.controller;
 
+import com.google.gson.Gson;
 import com.sunhao.common.CmsAssert;
 import com.sunhao.common.MsgResult;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Category;
+import com.sunhao.entity.Image;
+import com.sunhao.entity.TypeEnum;
 import com.sunhao.service.ArticleService;
 import com.sunhao.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +38,16 @@ public class ArticleController {
         Article article = articleService.getArticleByid(id);
         CmsAssert.AssertTrueHtml(article!=null, "文章不存在");
         request.setAttribute("article",article);
-        return "article/detail";
+        if(article.getArticleType()== TypeEnum.HTML)
+            return "article/detail";
+        else {
+            Gson gson = new Gson();
+            // 文章内容转换成集合对象
+            List<Image> imgs = gson.fromJson(article.getContent(), List.class);
+            article.setImgList(imgs);
+            System.out.println(" article is "  + article);
+            return "article/detailimg";
+        }
     }
 
     //按频道获取类别

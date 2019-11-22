@@ -6,6 +6,13 @@
 
     <resultMap id="ArticeMapper" type="article">
         <id column="id" property="id"></id>
+        <result column="user_id" property="userId"></result>
+        <result column="channel_id" property="channelId"></result>
+        <result column="category_id" property="categoryId"></result>
+        <result property="articleType" column="articleType"
+                typeHandler="org.apache.ibatis.type.EnumOrdinalTypeHandler"
+                jdbcType="INTEGER" javaType="com.sunhao.entity.TypeEnum"/>
+
         <association property="user" column="user_id" select="com.sunhao.dao.UserMapper.getList"></association>
         <association property="channel" column="channel_id" select="com.sunhao.dao.ChannelMapper.getList"></association>
         <association property="category" column="category_id" select="com.sunhao.dao.CategoryMapper.getList"></association>
@@ -15,7 +22,7 @@
 
 
     <select id="getHotList" resultMap="ArticeMapper">
-    SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt
+    SELECT id,title,picture,content,channel_id,category_id,user_id,hits,created,updated,commentCnt,articleType
     FROM cms_article
     where deleted = 0 and status= 1 and hot = 1
     ORDER BY created  DESC
@@ -66,5 +73,13 @@
     <select id="getDetailById" resultMap="ArticeMapper">
          select * from cms_article where deleted = 0
         AND id = #{id}  ORDER BY created  DESC
+    </select>
+
+    <select id="getImgArticles" resultMap="ArticeMapper">
+        SELECT id,title,picture,channel_id,category_id,hits,commentCnt,created,status,user_id,articleType
+        FROM cms_article
+        WHERE deleted=0 AND status=1 AND articleType=1
+        ORDER BY created DESC
+        LIMIT #{value }
     </select>
 </mapper>

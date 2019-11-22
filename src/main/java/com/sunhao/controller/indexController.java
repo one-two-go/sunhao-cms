@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -69,6 +71,8 @@ public class indexController {
         PageInfo<Article> articles = articeService.listBycateId(chnId,categoryId,page);
         request.setAttribute("articles",articles);
 
+
+
         return "channelindex";
     }
 
@@ -76,7 +80,7 @@ public class indexController {
 
 
     @RequestMapping(value = {"/", "index"})
-    public String index(HttpServletRequest request,
+    public String index(HttpServletRequest request, HttpServletResponse response,
                         @RequestParam(defaultValue = "1") Integer page) {
         /**
          *
@@ -85,6 +89,24 @@ public class indexController {
          * @param page  文章页码
          * @return
          */
+
+        Cookie cookie = new Cookie("ckey", "cValue");
+        //cookie.setDomain("/");
+        cookie.setMaxAge(2000);
+        cookie.setComment("test22");
+        cookie.setMaxAge(1000);
+        cookie.setVersion(18);
+        response.addCookie(cookie);
+
+        response.addCookie(cookie);
+
+        cookie = new Cookie("ckey1", "cValue1");
+        //cookie.setDomain("/");
+        cookie.setMaxAge(2000);
+        cookie.setComment("test");
+        cookie.setMaxAge(1000);
+        cookie.setVersion(16);
+        response.addCookie(cookie);
         /**
          * 获取频道
          */
@@ -100,6 +122,9 @@ public class indexController {
          */
         List<Article> newArticle = articeService.getnewArticle(5);
         request.setAttribute("newArticle", newArticle);
+        //获取最新图片信息
+        List<Article> imgArticles = articeService.getImgArticles(10);
+
         return "index";
     }
 }

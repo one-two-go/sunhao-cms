@@ -44,4 +44,6 @@ public interface ArticleService {
     int update(Article article);
 
     int favorite(Integer UserId, Integer articleId);
+
+    List<Article> getImgArticles(int i);
 }
