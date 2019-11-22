@@ -22,6 +22,10 @@ public class ChannelServiceImpl implements ChannelService {
     @Autowired
     ChannelMapper channelMapper;
 
+    /**
+     * 获取所有的频道 ORDER BY id
+     * @return
+     */
     @Override
     public List<Channel> getChannelList() {
         return channelMapper.getChannelList();

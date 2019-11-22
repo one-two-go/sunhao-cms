@@ -40,4 +40,6 @@ public interface ArticleService {
     int apply(int id, int status);
 
     int setHot(int id, int status);
+
+    int update(Article article);
 }

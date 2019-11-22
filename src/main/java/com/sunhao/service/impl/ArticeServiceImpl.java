@@ -74,6 +74,11 @@ public class ArticeServiceImpl implements ArticleService {
         return articeMapper.add(article);
     }
 
+    /**
+     * 获取文章详情 不考虑状态，只判断是否删除
+     * @param id
+     * @return
+     */
     @Override
     public Article getDetailById(Integer id) {
         return articeMapper.getDetailById(id);
@@ -87,6 +92,11 @@ public class ArticeServiceImpl implements ArticleService {
     @Override
     public int setHot(int id, int status) {
         return articeMapper.setHot(id,status);
+    }
+
+    @Override
+    public int update(Article article) {
+        return articeMapper.update(article);
     }
 
 }

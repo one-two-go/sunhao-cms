@@ -16,10 +16,11 @@
                 AND username LIKE concat('%',#{value},'%')
             </if>
         </where>
+        ORDER BY create_time DESC
     </select>
 
     <select id="getList" resultType="user">
-        select * from cms_user where id = #{value }
+        SELECT * FROM cms_user where id = #{value } ORDER BY create_time DESC
     </select>
 
     <insert id="add">

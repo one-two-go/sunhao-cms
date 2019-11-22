@@ -38,7 +38,7 @@
         	SELECT id,title,picture,channel_id,category_id,user_id,hits,commentCnt,created
         	FROM cms_article WHERE deleted = 0 AND status = 1 AND channel_id = #{chnId}
             <if test="categoryId !=0">
-                AND channel_id = #{categoryId}
+                AND category_id = #{categoryId}
             </if>
              ORDER BY created DESC
 

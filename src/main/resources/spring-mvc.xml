@@ -45,6 +45,21 @@
 			<bean class="com.mmcro.cms.web.AuthIntercepter"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors> -->
+
+	<!-- 配置权限的拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/user/login"/>
+			<mvc:exclude-mapping path="/user/register"/>
+			<mvc:exclude-mapping path="/"/>
+			<mvc:exclude-mapping path="/index"/>
+			<mvc:exclude-mapping path="/pic/**"/>
+			<mvc:exclude-mapping path="/resource/**"/>
+			<mvc:exclude-mapping path="/article/showdetail"/>
+			<bean class="com.sunhao.web.UserInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 	
 	<!-- 上传下载配置 -->	
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">

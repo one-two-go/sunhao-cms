@@ -1,5 +1,6 @@
 package com.sunhao.controller;
 
+import com.sunhao.common.CmsAssert;
 import com.sunhao.common.MsgResult;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Category;
@@ -32,6 +33,7 @@ public class ArticleController {
     @RequestMapping("detail")
     public String getArticleByid(HttpServletRequest request,Integer id){
         Article article = articleService.getArticleByid(id);
+        CmsAssert.AssertTrueHtml(article!=null, "文章不存在");
         request.setAttribute("article",article);
         return "article/detail";
     }

@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+         pageEncoding="UTF-8"%>
+<%@ taglib prefix="c"  uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -13,13 +13,28 @@
     <script type="text/javascript" src="/resource/bootstrap/js/bootstrap.js"></script>
     <title>有花堪折直须折</title>
     <style type="text/css">
-        .menu li {
-            font-size: 26px;
-            text-align: center;
+        .menu li{
+            font-size:26px;
+            text-align:center;
+        }
+        .menu li:hover{
+            background:#000099;
+            color:#FF9900;
         }
 
-        .menu li:hover {
-            background: gray;
+        .ex {
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+
+        div {
+            background: 3399FF;
+        }
+
+        .fl{
+            font-size:18px;
+            color: #FF9900;
         }
 
 
@@ -27,29 +42,51 @@
 
 </head>
 
-<body>
-<!-- 导航条 -->
+<body style="background:#3399FF;">
+<!-- <audio autoplay="autoplay"   id="myaudio"  loop="loop" preload="auto"
+  src="/resource/audio/jmszl.mp3"/> -->
+
+
+
 <!-- 导航条 -->
 <nav class="navbar navbar-default" style="background:#000099">
     <%@include  file="common/top.jsp" %>
 </nav>
 
-<div class="container-fluid">
-    <div class="container" style="minheight:200px">
+
+<div class="container-fluid" style="background: url() no-repeat; width:100%; height:100%;overflow: hidden;background-size:cover;" >
+    &nbsp;<br/>
+    &nbsp;
+</div>
+
+<!-- <div class="progress progress-striped ">
+        <div class="progress-bar progress-bar-warning" role="progressbar"
+                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"
+                 style="width: 20%;">
+                <span class="sr-only">20% 完成（警告）</span>
+        </div>
+</div> -->
+
+
+<div class="container-fluid" >
+
+
+    <div class="container" style="minheight:200px" >
         <div class="row">
             <!-- 左侧菜单 -->
-            <div class="col-md-2" style="minheight:200px;margin-top:20px">
+            <div class="col-md-2" style="max:200px;margin-top:20px" >
 
                 <ul class="list-group menu">
-                    <li class="list-group-item active">热门文章</li>
-                    <c:forEach items="${channelList}" var="channel" varStatus="index">
+                    <li class="list-group-item active" >热门文章</li>
+                    <c:forEach items="${channels}" var="channel" varStatus="index">
                         <li class="list-group-item" data="/channel?chnId=${channel.id}" >${channel.name}</li>
+
                     </c:forEach>
                 </ul>
             </div>
 
             <!-- 中间的内容 -->
-            <div class="col-md-8" style="background:white;minheight:200px">
+            <div class="col-md-8 thumbnail"  style="border-radius:12px; margin-top:20px;margin-bottom:20px; background:white;minheight:200px" >
                 <div>
                     <hr>
 
@@ -63,15 +100,15 @@
                         <li data-target="#myCarousel" data-slide-to="2"></li>
                     </ol>
                     <!-- 轮播（Carousel）项目 -->
-                    <div class="carousel-inner">
+                    <div class="carousel-inner thumbnail" style="border-radius:12px;">
                         <div class="item active">
-                            <img height="300px" src="/resource/images/donghua.gif" alt="First slide">
+                            <img  class="img-rounded"  src="/resource/images/lunbo1.jpg" style=" border-radius:24px; align:center;width:800px; height:400px;" alt="First slide">
+                        </div>
+                        <div  class="item">
+                            <img  class="img-rounded" src="/resource/images/lunbo2.jpg"  style="border-radius:24px;width:800px; height:400px;" alt="Second slide">
                         </div>
                         <div class="item">
-                            <img height="300px" src="/resource/images/avatar1.jpg" alt="Second slide">
-                        </div>
-                        <div class="item">
-                            <img height="300px" src="/resource/images/bg05.jpg" alt="Third slide">
+                            <img  class="img-rounded" src="/resource/images/lunbo3.jpg" style="border-radius:24px; width:800px; height:400px;" alt="Third slide">
                         </div>
                     </div>
                     <!-- 轮播（Carousel）导航 -->
@@ -84,27 +121,29 @@
                         <span class="sr-only">Next</span>
                     </a>
                 </div>
+
                 <!-- 放文章的列表 -->
-                <div>
-                    <c:forEach items="${hotList.list}" var="hl">
-                        <div class=row>
-                            <hr align="left" style="width:100%">
-                            <div class="col-md-2"><img height="50px" width="80px" src="/resource/images/avatar1.jpg"></div>
+                <div >
+                    <c:forEach items="${hotList.list}" var="article" >
+                        <div class=row style="padding-bottom:1px">
+                            <hr width="88%" style="background-color:#D2691E;border:none;height:1px">
+                            <div class="col-md-2" style="text-align:right"><img height="80px" width="80px" src="/pic/${article.picture}" onerror="this.src='/resource/images/default-cat.png'" class="img-rounded"></div>
                             <div class="col-md-10">
-                                <a href="javascript:showArticle(${hl.id})">${hl.title}</a>
+                                <a href="javascript:showArticle(${article.id})">${article.title}</a>
+                                <br><br>
+                                频道：<a>${article.channel.name}</a> &nbsp;&nbsp;
+                                分类：<a>${article.category.name}</a>
                                 <br>
-                                频道：<a>${hl.channel.name}</a>&nbsp;&nbsp;
-                                分类: <a>${hl.category.name}</a>
-                                <br>
-                                <!--内容：<a>${hl.content}</a> -->
-                                <br/>
-                                <br>
-                                ${hl.user.username}&nbsp;发布于 <fmt:formatDate value="${hl.created}" pattern="yyyy-MM-dd"></fmt:formatDate>
+
+                                    ${article.user.username} 发布于  <fmt:formatDate value="${article.created}" pattern="yyyy-MM-dd"/>
                             </div>
                         </div>
-
                     </c:forEach>
-                    <div class="row">
+
+
+                    <div class="row" style="text-align: center;padding-top:1px">
+                        <hr width="88%" style="background-color:#D2691E;border:none;height:1px">
+
                         <ul class="pagination">
                             <li><a href="/index?page=${hotList.prePage}">&laquo;</a></li>
                             <c:forEach begin="${hotList.pageNum-2 > 1 ? hotList.pageNum-2:1}" end="${hotList.pageNum+2 > hotList.pages ? hotList.pages:hotList.pageNum+2}" varStatus="index">
@@ -112,29 +151,29 @@
                                     <li><a href="/index?page=${index.index}">${index.index}</a></li>
                                 </c:if>
                                 <c:if test="${hotList.pageNum==index.index}">
-                                    <li><a href="javascript:"> <strong> ${index.index} </strong> </a></li>
+                                    <li><a href="/index?page=${index.index}"><strong> ${index.index} </strong> </a></li>
                                 </c:if>
 
                             </c:forEach>
                             <li><a href="/index?page=${hotList.nextPage}">&raquo;</a></li>
                         </ul>
                     </div>
-
-
-
                 </div>
 
             </div>
             <!-- 中间的内容结束 -->
 
 
-            <div class="col-md-2" style="minheight:200px">
+            <div class="col-md-2" style=" margin-top:30px ;minheight:200px" >
+
                 <div class="panel panel-primary">
                     <div class="panel-heading">
-                        <h3 class="panel-title">面板标题</h3>
+                        <h3 class="panel-title">公告</h3>
                     </div>
                     <div class="panel-body">
-                        这是一个基本的面板
+                        <a href="#">1.今天浴池停水</a>
+                        <br/>
+                        <a href="#">2.下午食堂馒头免费</a>
                     </div>
                 </div>
 
@@ -142,9 +181,9 @@
                     <div class="panel-heading">
                         <h3 class="panel-title">最新文章</h3>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body ex">
                         <c:forEach items="${newArticle}" var="article" varStatus="index">
-                            ${index.index+1}   <a>${article.title}</a>
+                            ${index.index+1} . <a>${article.title}</a>
                             <br/>
                         </c:forEach>
                     </div>
@@ -158,17 +197,36 @@
 </div>
 
 
-<!-- 底部 -->
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-    </div>
-</nav>
 
-<script type="text/javascript">
-    function showArticle(articleId) {
-        window.open("/article/detail?id="+articleId);
-    }
-</script>
+<!-- 底部 -->
+<nav class="navbar navbar-default" style="background:#000099">
+    <div class="container-fluid" style="text-align:center">
+        <div class="row" style="margin-top:13px">
+            <div class="col-md-1"><a href="sohu.com" class="fl"></a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">搜狐</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">今日头条</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">网易</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">新浪中国</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">百度</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">饿了么</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">淘宝</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">大众点评</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">豆瓣电影</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">风火轮</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl"></a></div>
+        </div>
+        <div class="row" >
+            <div class="col-md-1"><a href="sohu.com" class="fl"></a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">饿了么</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">淘宝</a></div>
+            <div class="col-md-1"><a href="sohu.com" class="fl">大众点评</a></div>
+
+        </div>
+    </div>
+    <hr width="90%"/>
+    <%@include file="./common/footer.jsp"  %>
+</nav>
+<script type="text/javascript" src="/resource/js/cms_index.js"></script>
 
 </body>
 </html>

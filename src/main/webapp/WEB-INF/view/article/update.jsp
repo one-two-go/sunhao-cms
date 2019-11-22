@@ -29,20 +29,22 @@
     });
     function query(){
         alert(editor1.html())
-        //alert( $("[name='content1']").attr("src"))
+
     }
 </script>
 <div style="margin:10px 10px  10px  10px ; overflow-y:">
+
     <form action="" id="form">
+        <input type="hidden" name="id" value="${article.id}">
         <div class="form-group row ">
             <label for="title">文章标题</label> <input type="text"
-                                                   class="form-control" id="title" name="title" placeholder="请输入标题">
+                                                   class="form-control" id="title" name="title" value="${article.title}"  placeholder="请输入标题">
         </div>
 
 
         <div class="form-group row ">
 			<textarea name="content1" cols="100" rows="8"
-                      style="width: 860px; height: 250px; visibility: hidden;"><%=htmlspecialchars(htmlData)%></textarea>
+                      style="width: 860px; height: 250px; visibility: hidden;">${content1}</textarea>
             <br />
         </div>
         <div class="form-group row ">
@@ -54,7 +56,14 @@
             <select class="custom-select custom-select-sm mb-3" id="channel"  name="channelId">
                 <option value="0">请选择</option>
                 <c:forEach items="${channels}" var="channel">
-                    <option value="${channel.id}">${channel.name}</option>
+                    <c:choose>
+                        <c:when test="${channel.id == article.channel.id}">
+                            <option value="${channel.id}" selected="selected">${channel.name}</option>
+                        </c:when>
+                        <c:otherwise>
+                            <option value="${channel.id}">${channel.name}</option>
+                        </c:otherwise>
+                    </c:choose>
                 </c:forEach>
             </select>
         </div>
@@ -81,17 +90,25 @@
 <script type="text/javascript">
 
     // 当频道的数据发生改变的时候，分类需要联动
-    $("#channel").change(function(){
+    $("#channel").change(function(){ changeChannel()});
+
+    function changeChannel(){
         // 获取修改后的频道值
-        var channelId =  $(this).val();
+        var channelId =  $("#channel").val();
         // 根据频道的数据获取相应的分裂
         $.post("/article/getCategoryByChannel",{chnId:channelId},function(data){
                 //data 包含了分类的信息
                 if(data.result==1){
+                    // 清空数据
                     $("#category").empty();
+                    // 追加
                     $("#category").append("<option value='0'>请选择</option>")
                     for ( var index in data.data) {
-                        $("#category").append("<option value='"+ data.data[index].id +"'>"+data.data[index].name+"</option>")
+                        if(data.data[index].id == "${article.category.id}" ){
+                            $("#category").append("<option value='"+ data.data[index].id +"' selected>"+data.data[index].name+"</option>")
+                        }else{
+                            $("#category").append("<option value='"+ data.data[index].id +"'>"+data.data[index].name+"</option>")
+                        }
                     }
                 }else{
                     // 获取数据失败
@@ -99,8 +116,10 @@
                 }
             },"json"
         )
+    }
 
-    })
+    // 首次加载以后自动出现分类
+    changeChannel();
 
 
 
@@ -121,12 +140,11 @@
             processData : false,
             // 告诉jQuery不要去设置Content-Type请求头
             contentType : false,
-            url:"/user/postArticle",
+            url:"/user/updateArticle",
             success:function(obj){
                 if(obj){
                     alert("发布成功!")
                     $('#content').load("/user/myarticles");
-
                 }else{
                     alert("发布失败")
                 }

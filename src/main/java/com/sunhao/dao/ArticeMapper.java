@@ -54,4 +54,9 @@ public interface ArticeMapper {
 
     @Update("UPDATE cms_article SET hot=#{status} WHERE id = #{id}")
     int setHot(@Param("id") int id, @Param("status") int status);
+
+    @Update("UPDATE cms_article SET title=#{title},content=#{content},"
+            + "picture=#{picture},channel_id=#{channelId},"
+            + "category_id=#{categoryId},status=0,updated=now() WHERE id=#{id}")
+    int update(Article article);
 }

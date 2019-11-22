@@ -25,13 +25,13 @@
             <td><fmt:formatDate value="${article.created}" pattern="yyyy-MM-dd"/></td>
             <td>
                 <c:choose>
-                    <c:when test="article.status==0">
+                    <c:when test="${article.status==0}">
                         待审核
                     </c:when>
-                    <c:when test="article.status==1">
+                    <c:when test="${article.status==1}">
                         审核通过
                     </c:when>
-                    <c:when test="article.status==2">
+                    <c:when test="${article.status==2}">
                         审核被拒
                     </c:when>
                     <c:otherwise>
@@ -40,7 +40,7 @@
                 </c:choose>
             </td>
             <td>
-                <input type="button" onclick="" value="修改" class="btn-info"/>
+                <input type="button" onclick="modifyArticle(${article.id})" value="修改" class="btn-info"/>
                 <input type="button" onclick="delArticle(${article.id})" value="删除"  class="btn-danger"/>
             </td></tr>
     </c:forEach>
@@ -77,4 +77,11 @@
             }
         },"json")
     }
+
+    function modifyArticle(articleId) {
+    var url="/user/updateArticle?id="+articleId;
+    $("#content").load(url);
+    }
+
+
 </script>

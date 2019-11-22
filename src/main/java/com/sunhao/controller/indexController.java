@@ -42,11 +42,11 @@ public class indexController {
      * @param page  文章页码
      * @return
      */
-    @RequestMapping( "channel")
 
-    public String channel(HttpServletRequest request,
-                        @RequestParam(defaultValue = "") int chnId,
-                        @RequestParam(defaultValue = "") int categoryId,
+    @RequestMapping( "channel")
+    public String channels(HttpServletRequest request,
+                        @RequestParam(defaultValue = "0") int chnId,
+                        @RequestParam(defaultValue = "0") int categoryId,
                         @RequestParam(defaultValue = "1") Integer page) {
 
         // 回传参数数值
@@ -88,8 +88,8 @@ public class indexController {
         /**
          * 获取频道
          */
-        List<Channel> channelList = channelService.getChannelList();
-        request.setAttribute("channelList", channelList);
+        List<Channel> channels = channelService.getChannelList();
+        request.setAttribute("channels", channels);
         /**
          * 获取热门文章列表
          */

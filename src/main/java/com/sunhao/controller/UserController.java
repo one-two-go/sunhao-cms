@@ -137,6 +137,12 @@ public class UserController {
         return "user/myarticles";
     }
 
+    /**
+     * 删除用户的文章
+     * @param request
+     * @param id
+     * @return
+     */
 
     @RequestMapping("delArticle")
     @ResponseBody
@@ -165,6 +171,50 @@ public class UserController {
     }
 
     /**
+     * updateArticle
+     * 修改用户的文章
+     */
+    @RequestMapping(value = "updateArticle",method = RequestMethod.GET)
+    public String updateArticle(HttpServletRequest request,int id){
+         //获取文章详情，用于回显  不考虑状态，只判断是否删除
+        Article article = articleService.getDetailById(id);
+        request.setAttribute("article",article);
+
+        request.setAttribute("content1",htmlspecialchars(article.getContent()));
+
+        //获取所用的频道信息
+        List<Channel> channels=  channelService.getChannelList();
+        System.out.println(channels);
+        request.setAttribute("channels",channels);
+
+        return "article/update";
+    }
+
+    @RequestMapping(value = "updateArticle",method = RequestMethod.POST)
+    @ResponseBody
+    public MsgResult updateArticle(HttpServletRequest request,MultipartFile file,Article article) throws IOException {
+        //  1。先判断文章id是否存在 2。当前用户是否有权限修改这个文章
+
+        //判断图片 ，替换图片新的
+        if(!file.isEmpty()){
+            String picUrl = processFile(file);
+            article.setPicture(picUrl);
+        }
+
+        int result = articleService.update(article);
+        if (result>0){
+            return new MsgResult(1,"",null);
+        }else {
+            return new MsgResult(2,"",null);
+        }
+
+
+    }
+
+
+
+
+    /**
      * 发布我的文章
      * GetMapping==@RequestMapping(method = RequestMethod.GET)
      */
@@ -178,7 +228,6 @@ public class UserController {
 
         return "article/publish";
     }
-
     @PostMapping("postArticle")
     @ResponseBody
     public MsgResult postArticle(HttpServletRequest request, MultipartFile file,Article article) throws IOException {
@@ -242,12 +291,20 @@ public class UserController {
         return null == userService.findUserByName(username);
     }
 
-
+    //退出登陆
     @RequestMapping("logout")
     public String logout(HttpServletRequest request){
         request.getSession().removeAttribute(ConstantClass.USER_KEY);
         return "redirect:/";
     }
 
+    //文章内容转换
+    private String htmlspecialchars(String str) {
+        str = str.replaceAll("&", "&amp;");
+        str = str.replaceAll("<", "&lt;");
+        str = str.replaceAll(">", "&gt;");
+        str = str.replaceAll("\"", "&quot;");
+        return str;
+    }
 
 }

@@ -40,7 +40,7 @@
             <div class="col-md-2" style="minheight:200px;margin-top:20px" >
 
                 <ul class="list-group menu">
-                    <li class="list-group-item" data="/" >热门文章</li>
+                    <li class="list-group-item" data="/" >热门文章+++</li>
                     <c:forEach items="${channels}" var="channel" varStatus="index">
                         <li class="list-group-item ${chnId==channel.id? "active":"" }" data="/channel?chnId=${channel.id}">${channel.name}</li>
                     </c:forEach>
@@ -117,13 +117,14 @@
 
                 <div class="panel panel-info">
                     <div class="panel-heading">
-                        <h3 class="panel-title">最新文章</h3>
+                        <h3 class="panel-title">最新文章++</h3>
                     </div>
-                    <div class="panel-body">
-                        <c:forEach items="${newArticles}" var="article" varStatus="index">
+                    <div class="panel-body ex">
+                        <c:forEach items="${newArticle}" var="article" varStatus="index">
                             ${index.index+1} . <a>${article.title}</a>
                             <br/>
                         </c:forEach>
+                    </div>
                     </div>
                 </div>
 
