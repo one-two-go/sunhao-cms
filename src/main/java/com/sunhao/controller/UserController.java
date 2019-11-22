@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.AssertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -61,6 +62,28 @@ public class UserController {
 
         request.setAttribute("info", "hello");
         return "user/test";
+    }
+
+    /**
+     * 我的收藏夹
+     */
+
+    @RequestMapping("favorite")
+    @ResponseBody
+    public MsgResult favorite(HttpServletRequest request,Integer id){
+
+        System.out.println(id+"+++++++");
+        //判断传入的id和用户是否可以
+        CmsAssert.AssertTrue(id>0,"文章ID不符合呢");
+        User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
+        CmsAssert.AssertTrue(loginUser!=null,"请您先登陆呢");
+
+        int result = articleService.favorite(loginUser.getId(),id);
+
+        CmsAssert.AssertTrue(result>0,"收藏失败了");
+
+
+        return new MsgResult(1,"恭喜，收藏成功了",null);
     }
 
     /**

@@ -42,4 +42,6 @@ public interface ArticleService {
     int setHot(int id, int status);
 
     int update(Article article);
+
+    int favorite(Integer UserId, Integer articleId);
 }

@@ -14,7 +14,9 @@
 <div class="container">
     <h2>
         ${article.title}
+            ${article.id}
     </h2>
+    <a href="javascript:favorite(${article.id})">收藏</a>
     <h5>
         作者：${article.user.username}
         &nbsp;&nbsp;&nbsp;&nbsp; 发布时间：${article.created}
@@ -27,6 +29,7 @@
     <div>
         <nav aria-label="...">
             <ul class="pager">
+
                 <li><a href="#">上一篇</a></li>
                 <li><a href="#">下一篇</a></li>
             </ul>
@@ -36,7 +39,17 @@
         <!-- 	显示文章的评论 -->
     </div>
 </div>
+<script type="text/javascript">
+    function favorite(id) {
+        $.post("/user/favorite",{id:id},function(msg) {
+            if (msg.result==1){
+                alert("收藏成功")
+            }else {
+                alert("收藏失败！！！")}
+        },"json");
+    }
 
+</script>
 
 </body>
 </html>

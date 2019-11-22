@@ -99,4 +99,10 @@ public class ArticeServiceImpl implements ArticleService {
         return articeMapper.update(article);
     }
 
+    @Override
+    public int favorite(Integer UserId, Integer articleId) {
+        return articeMapper.favorite(UserId,articleId);
+    }
+
+
 }

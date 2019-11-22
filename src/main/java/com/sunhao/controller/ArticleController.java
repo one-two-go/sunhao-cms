@@ -30,7 +30,7 @@ public class ArticleController {
     @Autowired
     CategoryService categoryService;
 
-    @RequestMapping("detail")
+    @RequestMapping("showdetail")
     public String getArticleByid(HttpServletRequest request,Integer id){
         Article article = articleService.getArticleByid(id);
         CmsAssert.AssertTrueHtml(article!=null, "文章不存在");

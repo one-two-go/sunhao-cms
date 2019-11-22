@@ -59,4 +59,7 @@ public interface ArticeMapper {
             + "picture=#{picture},channel_id=#{channelId},"
             + "category_id=#{categoryId},status=0,updated=now() WHERE id=#{id}")
     int update(Article article);
+
+    @Insert("REPLACE cms_favorite(user_id,article_id,created) values(#{userId},#{articleId},now())")
+    int favorite(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
 }
