@@ -2,6 +2,7 @@ package com.sunhao.dao;
 
 import com.fasterxml.jackson.databind.JavaType;
 import com.sunhao.entity.Article;
+import com.sunhao.entity.Comment;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
@@ -71,4 +72,13 @@ public interface ArticeMapper {
     int favorite(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
 
     List<Article> getImgArticles(int num);
+
+    @Insert("INSERT INTO cms_comment(articleId,userId,content,created)VALUES(#{articleId},#{userId},#{content},now())")
+    int addComment(@Param("userId") Integer userId, @Param("articleId") Integer articleId, @Param("content") String content);
+
+    @Update("UPDATE cms_article set commentCnt = commentCnt+1 WHERE id= #{value}")
+    void addCommentCount(Integer articleId);
+
+    @Select("SELECT * FROM cms_comment WHERE articleId = #{articleId}")
+    List<Comment> getCommentList(Integer articleId);
 }

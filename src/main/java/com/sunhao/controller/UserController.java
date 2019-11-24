@@ -1,5 +1,6 @@
 package com.sunhao.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
@@ -61,7 +62,33 @@ public class UserController {
 
         request.setAttribute("info", "hello");
         return "user/test";
+
     }
+
+    @RequestMapping("comment")
+    @ResponseBody
+    public MsgResult comment(HttpServletRequest request,Integer id,String content){
+        User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
+        CmsAssert.AssertTrue(loginUser!=null,"请你先登陆账号");
+
+        int result = articleService.addComment(loginUser.getId(),id,content);
+        if (result>0){
+            return new MsgResult(1,"评论成功",null);
+        }else {
+            return new MsgResult(0,"评论失败",null);
+        }
+    }
+    @RequestMapping("commentList")
+    public String commentList(HttpServletRequest request,@RequestParam(defaultValue = "1") int page,Integer articleId){
+
+        PageInfo<Comment> pageInfo  = articleService.getCommentList(page,articleId);
+        request.setAttribute("pageInfo",pageInfo);
+
+        return "article/comments";
+    }
+
+
+
 
     /**
      * 我的收藏夹
@@ -128,11 +155,6 @@ public class UserController {
             return  new MsgResult(2,"不好意思，发布失败了",null);
         }
     }
-
-
-
-
-
 
     /**
      * 跳转到注册页面

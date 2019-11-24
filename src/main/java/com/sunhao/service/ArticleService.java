@@ -2,6 +2,7 @@ package com.sunhao.service;
 
 import com.github.pagehelper.PageInfo;
 import com.sunhao.entity.Article;
+import com.sunhao.entity.Comment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,4 +47,8 @@ public interface ArticleService {
     int favorite(Integer UserId, Integer articleId);
 
     List<Article> getImgArticles(int i);
+
+    int addComment(Integer UserId, Integer articleId, String content);
+
+    PageInfo<Comment> getCommentList(int page, Integer articleId);
 }

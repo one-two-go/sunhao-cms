@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.sunhao.common.ConstantClass;
 import com.sunhao.dao.ArticeMapper;
 import com.sunhao.entity.Article;
+import com.sunhao.entity.Comment;
 import com.sunhao.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -112,6 +113,42 @@ public class ArticeServiceImpl implements ArticleService {
     @Override
     public List<Article> getImgArticles(int num) {
         return articeMapper.getImgArticles(num);
+    }
+
+
+    /**
+     * 发表文章评论
+     * @param UserId
+     * @param articleId
+     * @param content
+     * @return
+     */
+    @Override
+    public int addComment(Integer UserId, Integer articleId, String content) {
+
+        int result = articeMapper.addComment(UserId,articleId,content);
+
+        if (result>0){
+            //文章评论加1
+            articeMapper.addCommentCount(articleId);
+        }else {
+            return 0;
+        }
+
+        return result;
+    }
+
+    /**
+     * 获取文章评论的列表
+     * @param page
+     * @param articleId
+     * @return
+     */
+    @Override
+    public PageInfo<Comment> getCommentList(int page, Integer articleId) {
+        PageHelper.startPage(page,10);
+
+        return new PageInfo<Comment>(articeMapper.getCommentList(articleId));
     }
 
 

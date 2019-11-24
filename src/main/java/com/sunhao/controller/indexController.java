@@ -4,9 +4,11 @@ import com.github.pagehelper.PageInfo;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Category;
 import com.sunhao.entity.Channel;
+import com.sunhao.entity.Link;
 import com.sunhao.service.ArticleService;
 import com.sunhao.service.CategoryService;
 import com.sunhao.service.ChannelService;
+import com.sunhao.service.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +37,9 @@ public class indexController {
     ArticleService articeService;
     @Autowired
     CategoryService categoryService;
+
+    @Autowired
+    LinkService linkService;
 
 
     /**
@@ -90,23 +95,6 @@ public class indexController {
          * @return
          */
 
-        Cookie cookie = new Cookie("ckey", "cValue");
-        //cookie.setDomain("/");
-        cookie.setMaxAge(2000);
-        cookie.setComment("test22");
-        cookie.setMaxAge(1000);
-        cookie.setVersion(18);
-        response.addCookie(cookie);
-
-        response.addCookie(cookie);
-
-        cookie = new Cookie("ckey1", "cValue1");
-        //cookie.setDomain("/");
-        cookie.setMaxAge(2000);
-        cookie.setComment("test");
-        cookie.setMaxAge(1000);
-        cookie.setVersion(16);
-        response.addCookie(cookie);
         /**
          * 获取频道
          */
@@ -124,6 +112,11 @@ public class indexController {
         request.setAttribute("newArticle", newArticle);
         //获取最新图片信息
         List<Article> imgArticles = articeService.getImgArticles(10);
+
+        //获取友情链接
+        PageInfo<Link> pageInfo = linkService.getList(page);
+        List<Link> linkList = pageInfo.getList();
+        request.setAttribute("linkList",linkList);
 
         return "index";
     }
