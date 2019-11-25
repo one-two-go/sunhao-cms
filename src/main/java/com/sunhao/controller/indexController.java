@@ -114,7 +114,7 @@ public class indexController {
         List<Article> imgArticles = articeService.getImgArticles(10);
 
         //获取友情链接
-        PageInfo<Link> pageInfo = linkService.getList(page);
+        PageInfo<Link> pageInfo = linkService.getList(1);
         List<Link> linkList = pageInfo.getList();
         request.setAttribute("linkList",linkList);
 

@@ -92,6 +92,8 @@ public class LinkController {
     @PostMapping("updateLink")
     public String updateLink(HttpServletRequest request,@Valid @ModelAttribute("link") Link link,
                              BindingResult result){
+
+        //验证是否是合法的Url  验证未成功
         if(!StringUtils.isHttpUrl(link.getUrl())){
             result.rejectValue("url","不是合法的url","不是合法的url");
         }

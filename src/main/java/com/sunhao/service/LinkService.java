@@ -11,7 +11,7 @@ import com.sunhao.entity.Link;
  * 创 建 人：sunhao
  */
 public interface LinkService {
-    PageInfo<Link> getList(Integer page);
+    PageInfo getList(Integer page);
 
     int add(Link link);
 

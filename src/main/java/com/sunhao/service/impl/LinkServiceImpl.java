@@ -24,7 +24,7 @@ public class LinkServiceImpl implements LinkService {
 
 
     @Override
-    public PageInfo<Link> getList(Integer page) {
+    public PageInfo getList(Integer page) {
         PageHelper.startPage(page,5);
 
         return new PageInfo<Link>(linkMapper.getList());
