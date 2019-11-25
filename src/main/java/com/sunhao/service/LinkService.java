@@ -14,4 +14,10 @@ public interface LinkService {
     PageInfo<Link> getList(Integer page);
 
     int add(Link link);
+
+    int delLink(int id);
+
+    int update(Link link);
+
+    Link getListById(int id);
 }

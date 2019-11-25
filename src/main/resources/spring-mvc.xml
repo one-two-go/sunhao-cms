@@ -58,6 +58,7 @@
 			<mvc:exclude-mapping path="/user/comment"/>
 			<mvc:exclude-mapping path="/resource/**"/>
 			<mvc:exclude-mapping path="/article/**"/>
+			<mvc:exclude-mapping path="/article/showdetail"/>
 			<bean class="com.sunhao.web.UserInterceptor"></bean>
 		</mvc:interceptor>
 	</mvc:interceptors>

@@ -19,7 +19,7 @@
             <th>名称</th>
             <th>地址</th>
             <th>创建时间</th>
-            <th>操作    <input type="button" value="添加" onclick="add()">
+            <th>操作    <input type="button" value="添加" onclick="add()"/>
             </th>
         </tr>
         </thead>
@@ -60,8 +60,35 @@
         $("#content").load(url);
     }
 
+    //添加链接
     function add() {
         $("#content").load("/link/add");
     }
+
+    //刷新页面
+    function refresh() {
+        var url="/link/list?page=${info.pageNum}";
+        $("#content").load(url);
+    }
+
+
+    //删除链接
+    function del(id) {
+        $.get("/link/delLink", {id: id}, function (msg) {
+            if (msg.result == 1) {
+                alert("删除成功！！！")
+                refresh()
+            } else {
+                alert("删除失败！！")
+            }
+        });
+    }
+
+    //修改
+    function update(id) {
+        $("#content").load("/link/update?id="+id);
+    }
+
+
 
 </script>

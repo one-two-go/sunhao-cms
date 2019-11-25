@@ -15,14 +15,14 @@ import java.util.Date;
 public class Link implements Serializable {
     private static final long serialVersionUID = 4816368368587130309L;
 
-    private int id;
+     int id;
 
-    @Length(max = 255, min = 5, message = "长度超出范围")
+    @Length(max = 255, min = 5, message = "长度范围不对")
     //@URL
-    private String url;
+     String url;
 
     @Length(max = 10, min = 2)
-    private String name;
+     String name;
 
     private Date created;
 

@@ -34,4 +34,20 @@ public class LinkServiceImpl implements LinkService {
     public int add(Link link) {
         return linkMapper.add(link);
     }
+
+    @Override
+    public int delLink(int id) {
+        return linkMapper.delLink(id);
+    }
+
+    @Override
+    public int update(Link link) {
+
+        return linkMapper.update(link);
+    }
+
+    @Override
+    public Link getListById(int id) {
+        return linkMapper.getListById(id);
+    }
 }

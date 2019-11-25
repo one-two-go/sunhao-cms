@@ -1,8 +1,10 @@
 package com.sunhao.dao;
 
 import com.sunhao.entity.Link;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -20,4 +22,13 @@ public interface LinkMapper {
 
     @Insert("INSERT INTO cms_link(url,name,created)VALUES(#{url},#{name},now())")
     int add(Link link);
+
+    @Delete("DELETE FROM cms_link WHERE id = #{id}")
+    int delLink(int id);
+
+    @Update("UPDATE cms_link SET name = #{ name} , url = #{url} WHERE id = #{id}")
+    int update(Link link);
+
+    @Select("SELECT * FROM cms_link WHERE id = #{id}")
+    Link getListById(int id);
 }

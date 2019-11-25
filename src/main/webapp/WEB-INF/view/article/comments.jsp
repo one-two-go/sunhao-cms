@@ -9,6 +9,6 @@
         <br>
         ${pl.userId}
         <fmt:formatDate value="${pl.created}" pattern="yyyy-MM-dd HH:mm:ss"/>
-
+        alter(${pl.created})
     </div>
 </c:forEach>
