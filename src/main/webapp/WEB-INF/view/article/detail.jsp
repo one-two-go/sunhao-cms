@@ -18,6 +18,8 @@
         ${article.title}
     </h2>
     <a href="javascript:favorite(${article.id})">收藏</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="javascript:collect(${article.id})">加入我的收藏夹</a>
     <h5>
         作者：${article.user.username}
         &nbsp;&nbsp;&nbsp;&nbsp; 发布时间：<fmt:formatDate value="${article.created}" pattern="yyyy-mm-dd"/>
@@ -59,6 +61,19 @@
                 alert("收藏失败！！！")}
         },"json");
     }
+    //将文章加在我的收藏夹中
+    function collect(id) {
+        var url = window.location.href;
+        $.post("/user/collect",{name:'${article.title}',url:url},
+            function (msg) {
+            if(msg.result==1){
+                alert("已添加到收藏夹中！！！");
+            }else {
+                alert(msg.errorMessage);
+            }
+        },"json");
+    }
+
 
     //评论
     function comment() {
@@ -76,8 +91,10 @@
         $("#commentList").load("/user/commentList?articleId=${article.id}");
     }
 
-
     showcomment();
+
+
+
 </script>
 
 </body>

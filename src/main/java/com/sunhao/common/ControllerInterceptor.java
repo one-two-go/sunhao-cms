@@ -1,14 +1,3 @@
-/**   
- * Copyright © 2019 公司名. All rights reserved.
- * 
- * @Title: ControllerInterceptor.java 
- * @Prject: zhukaige-cms
- * @Package: com.zhukaige.common 
- * @Description: TODO
- * @author: 王帅  
- * @date: 2019年11月19日 上午10:16:00 
- * @version: V1.0   
- */
 package com.sunhao.common;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,8 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 /** 
  * @ClassName: ControllerInterceptor 
  * @Description: TODO
- * @author:王帅  
- * @date: 2019年11月19日 上午10:16:00  
+ * @date: 2019年11月19日 上午10:16:00
  */
 @ControllerAdvice
 public class ControllerInterceptor {

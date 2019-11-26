@@ -51,4 +51,6 @@ public interface ArticleService {
     int addComment(Integer UserId, Integer articleId, String content);
 
     PageInfo<Comment> getCommentList(int page, Integer articleId);
+
+    PageInfo<Comment> getComList(int page);
 }

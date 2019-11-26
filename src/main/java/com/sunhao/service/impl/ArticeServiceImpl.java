@@ -6,6 +6,7 @@ import com.sunhao.common.ConstantClass;
 import com.sunhao.dao.ArticeMapper;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Comment;
+import com.sunhao.entity.User;
 import com.sunhao.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -145,11 +146,17 @@ public class ArticeServiceImpl implements ArticleService {
      * @return
      */
     @Override
-    public PageInfo<Comment> getCommentList(int page, Integer articleId) {
+    public PageInfo<Comment> getCommentList(int page,Integer articleId) {
         PageHelper.startPage(page,10);
 
         return new PageInfo<Comment>(articeMapper.getCommentList(articleId));
     }
 
+    @Override
+    public PageInfo<Comment> getComList(int page ) {
+        PageHelper.startPage(page,10);
+
+        return new PageInfo<Comment>(articeMapper.getComList());
+    }
 
 }

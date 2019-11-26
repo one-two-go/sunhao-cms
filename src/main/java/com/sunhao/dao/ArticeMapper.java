@@ -81,4 +81,7 @@ public interface ArticeMapper {
 
     @Select("SELECT * FROM cms_comment WHERE articleId = #{articleId}")
     List<Comment> getCommentList(Integer articleId);
+
+    @Select("SELECT * FROM cms_comment ")
+    List<Comment> getComList();
 }

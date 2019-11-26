@@ -23,7 +23,12 @@
                 <li class="list-group-item list-group-item-success" data="/user/myarticles">我的文章</li>
                 <li class="list-group-item list-group-item-info" data="/user/postArticle">发布文章</li>
                 <li class="list-group-item list-group-item-info" data="/user/postImg">发布图片</li>
-                <li class="list-group-item list-group-item-info">我的评论</li>
+                <li class="list-group-item list-group-item-info" data="/collect/list">我的收藏夹</li>
+                <li class="list-group-item list-group-item-info" data="/user/userCommentList">我的评论</li>
+                <div class="container" id="commentList">
+
+                </div>
+
                 <li class="list-group-item list-group-item-info">投票管理</li>
                 <li class="list-group-item list-group-item-info">个人设置</li>
             </ul>
@@ -45,10 +50,14 @@
 <script type="text/javascript">
     $(".homemenu li").click(function(){
         var url  = $(this).attr("data");
+        //alert(url);
         $("#content").load(url);
     })
-</script>
 
+    var url = $(".homemenu li:eq(0)").attr("data");
+    $("#content").load(url);
+
+</script>
 
 
 </body>

@@ -8,10 +8,7 @@ import com.sunhao.common.CmsAssert;
 import com.sunhao.common.ConstantClass;
 import com.sunhao.common.MsgResult;
 import com.sunhao.entity.*;
-import com.sunhao.service.ArticleService;
-import com.sunhao.service.CategoryService;
-import com.sunhao.service.ChannelService;
-import com.sunhao.service.UserService;
+import com.sunhao.service.*;
 import javafx.scene.input.DataFormat;
 import org.apache.ibatis.annotations.Param;
 import org.omg.CORBA.StringHolder;
@@ -56,6 +53,9 @@ public class UserController {
     @Autowired
     ChannelService channelService;
 
+    @Autowired
+    CollectService collectService;
+
     //测试使用
     @RequestMapping(value = "hello", method = RequestMethod.GET)
     public String ConTest(HttpServletRequest request) {
@@ -78,6 +78,14 @@ public class UserController {
             return new MsgResult(0,"评论失败",null);
         }
     }
+
+    /**
+     * 文章后面评论展示
+     * @param request
+     * @param page
+     * @param articleId
+     * @return
+     */
     @RequestMapping("commentList")
     public String commentList(HttpServletRequest request,@RequestParam(defaultValue = "1") int page,Integer articleId){
 
@@ -87,30 +95,63 @@ public class UserController {
         return "article/comments";
     }
 
+    /**
+     * 获取全部评论
+     * @param request
+     * @param page
+     * @return
+     */
+    @RequestMapping("userCommentList")
+    public String userCommentList(HttpServletRequest request,@RequestParam(defaultValue = "1") int page){
+
+        //获取全部全部评论，未按照登陆人条件查询
+       // User loginUser = (User)request.getSession().getAttribute(ConstantClass.USER_KEY);
+
+        PageInfo<Comment> pageInfo  = articleService.getComList(page);
+        request.setAttribute("pageInfo",pageInfo);
+
+        return "user/commentList";
+    }
+
 
 
 
     /**
-     * 我的收藏夹
+     * 添加 点击收藏
      */
-
     @RequestMapping("favorite")
     @ResponseBody
     public MsgResult favorite(HttpServletRequest request, Integer id) {
-
-        System.out.println(id + "+++++++");
         //判断传入的id和用户是否可以
         CmsAssert.AssertTrue(id > 0, "文章ID不符合呢");
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
         CmsAssert.AssertTrue(loginUser != null, "请您先登陆呢");
-
         int result = articleService.favorite(loginUser.getId(), id);
-
         CmsAssert.AssertTrue(result > 0, "收藏失败了");
-
-
         return new MsgResult(1, "恭喜，收藏成功了", null);
     }
+
+    @RequestMapping("collect")
+    @ResponseBody
+  public MsgResult collect(HttpServletRequest request,Collect collect){
+
+      //CmsAssert.AssertTrue(id>0, "id 不合法");
+        User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
+        CmsAssert.AssertTrue(loginUser!=null,"亲 啊,你还没有登陆呢！！");
+
+        if(collect.getName().length()>20){
+          collect.setName(collect.getName().substring(0,20)+"....");
+        }
+        collect.setUserId(loginUser.getId());
+        int result =collectService.addcollect(collect);
+        CmsAssert.AssertTrue(result>0,"收藏失败了呢！！");
+
+        return new MsgResult(1,"收藏成功了呢",null);
+
+  }
+
+
+
 
     /**
      * 发布图片
