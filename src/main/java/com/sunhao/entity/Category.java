@@ -1,5 +1,6 @@
 package com.sunhao.entity;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -9,7 +10,7 @@ import java.util.Objects;
  * 创建时间：2019/11/14 12:57 下午
  * 创 建 人：sunhao
  */
-public class Category {
+public class Category implements Serializable {
 
     private Integer id;
     private String name;

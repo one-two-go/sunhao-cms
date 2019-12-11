@@ -9,6 +9,9 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
+<!--	加在redis 配置-->
+	<import resource="classpath:redis.xml"></import><!--	加在redis 配置-->
+	<import resource="classpath:consumer.xml"></import>
 	<!-- 1、注解扫描器 -->
 	<!-- todo -->
 	<context:component-scan base-package="com.sunhao" >
@@ -91,5 +94,6 @@
 		<property name="basePackage" value="com.sunhao.dao"></property>
 
 	</bean>
+
 
 </beans>
