@@ -1,6 +1,8 @@
 package com.sunhao.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.sunhao.common.ConstantClass;
+import com.sunhao.dao.ElasticDao;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Category;
 import com.sunhao.entity.Channel;
@@ -9,8 +11,13 @@ import com.sunhao.service.ArticleService;
 import com.sunhao.service.CategoryService;
 import com.sunhao.service.ChannelService;
 import com.sunhao.service.LinkService;
+import com.sunhao.utils.HLUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -40,6 +47,82 @@ public class indexController {
 
     @Autowired
     LinkService linkService;
+    @Autowired
+    ElasticDao elasticDao;
+    @Autowired
+    ElasticsearchTemplate elasticsearchTemplate;
+
+    /**
+     * 完成es的搜索
+//     */
+//    List<Article> list = elasticDao.findByTitle(key);
+//      for(Article article :list){
+//        System.err.println(article);
+//    }
+//    PageInfo<Article> pageInfo = new PageInfo<>(list);
+//        request.setAttribute("hotList",pageInfo);
+//        return "index";
+    @GetMapping("index")
+    public String Search(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page ){
+        if(page==0){
+            page=1;
+        }
+        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, page,
+                ConstantClass.PAGE_SIZE, new String[]{"title"}, "id", key);
+        List<Article> list = (List<Article>) selectObjects.getContent();
+        PageInfo<Article> pageInfo = new PageInfo<>(list);
+        //当前页
+        pageInfo.setPageNum(page);
+        //每页显示多少条
+        pageInfo.setPageSize(ConstantClass.PAGE_SIZE);
+        //总条数
+        pageInfo.setTotal(selectObjects.getTotalElements());
+        //总页数
+        int total = (int) selectObjects.getTotalElements();
+        int pageSize = ConstantClass.PAGE_SIZE;
+        int pages = total%page==0?total/pageSize:total/pageSize+1;
+        pageInfo.setPages(pages);
+        if (page == pages){
+            page = pages;
+        }
+        pageInfo.setPrePage(page-1);
+        pageInfo.setNextPage(page+1);
+        request.setAttribute("hotList",pageInfo);
+        request.setAttribute("key",key);
+        return "index";
+    }
+//@GetMapping("index")
+//public String search(Model model, String key, @RequestParam(defaultValue = "1") int page) {
+    // 注入es的仓库
+//    if (page == 0) {
+//        page = 1;
+//    }
+//
+//    // 根据标题来搜索
+//    // List<Article> list = articleResp.findByTitle(key);
+//    AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, page,
+//            ConstantClass.PAGE_SIZE, new String[] { "title" }, "id", key);
+////    List<Article> list = (List<Article>) selectObjects.getContent();
+//    List<Article> list = (List<Article>) selectObjects.getContent();
+//    PageInfo<Article> pageInfo = new PageInfo<>(list);
+//    pageInfo.setPageNum(page);// 当前页
+//    pageInfo.setPageSize(ConstantClass.PAGE_SIZE);// 每页显示多少条
+//    pageInfo.setTotal(selectObjects.getTotalElements());// 总条数
+//    int totalRecord = (int) selectObjects.getTotalElements();
+//    int pages = totalRecord % ConstantClass.PAGE_SIZE == 0 ? totalRecord / ConstantClass.PAGE_SIZE
+//            : totalRecord / ConstantClass.PAGE_SIZE + 1;
+//    pageInfo.setPages(pages);
+//
+//    if (page == pages) {
+//        page = pages;
+//    }
+//    pageInfo.setPrePage(page - 1);
+//    pageInfo.setNextPage(page + 1);
+//    model.addAttribute("hotList", pageInfo);
+//
+//    model.addAttribute("key", key);
+//    return "index";
+//}
 
 
     /**

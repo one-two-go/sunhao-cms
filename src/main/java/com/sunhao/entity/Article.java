@@ -1,5 +1,11 @@
 package com.sunhao.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -12,31 +18,37 @@ import java.util.Objects;
  * 创建时间：2019/11/14 12:45 下午
  * 创 建 人：sunhao
  */
+//ElasticsearchRepository
+//elasticsearch里面创建索引cms_article（相当于数据库） 类型是article  都必须小写，不能用大写
+@Document(indexName = "cms_article",type = "article")
 public class Article implements Serializable {
-
-
     /**
      *
      */
     private static final long serialVersionUID = 6320126833474686896L;
-
+    @Id
     private Integer id               ;
     // 文章标题
+    @Field(analyzer = "ik_smart", index = true, store = true, searchAnalyzer = "ik_smart", type = FieldType.text)
     private String title            ;
     // 文章内容
+    @Field(analyzer = "ik_smart",index = true,store = true,searchAnalyzer = "ik_smart",type = FieldType.text)
     private String content          ;
     //标题图片的url 地址
     private String picture          ;
     // 频道
     private Integer channelId       ;
+//    @JsonIgnore
     private Channel channel       ;
 
     private String categoryId      ;
     // 文章的分类
+//    @JsonIgnore
     private Category category;
 
 
     private Integer userId          ;
+//    @JsonIgnore
     private User user          ;
 
     // 点击数量
@@ -58,6 +70,7 @@ public class Article implements Serializable {
     private int commentCnt       ;
 
     // 该文章的所有的图片
+//    @JsonIgnore
     private List<Image> imgList;
 
     public List<Image> getImgList() {
@@ -69,6 +82,7 @@ public class Article implements Serializable {
     }
 
     //文章类型
+//    @JsonIgnore
     private TypeEnum  articleType  = TypeEnum.HTML    ;
 
     public static long getSerialVersionUID() {

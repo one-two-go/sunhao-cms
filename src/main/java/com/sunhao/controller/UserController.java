@@ -1,5 +1,6 @@
 package com.sunhao.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
@@ -7,6 +8,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.util.ErrorMsg;
 import com.sunhao.common.CmsAssert;
 import com.sunhao.common.ConstantClass;
 import com.sunhao.common.MsgResult;
+import com.sunhao.dao.ElasticDao;
 import com.sunhao.entity.*;
 import com.sunhao.service.*;
 import javafx.scene.input.DataFormat;
@@ -14,12 +16,16 @@ import org.apache.ibatis.annotations.Param;
 import org.omg.CORBA.StringHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.annotation.Id;
 import org.springframework.http.HttpRequest;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.attribute.standard.NumberUp;
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.Soundbank;
 import javax.validation.constraints.AssertTrue;
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +61,10 @@ public class UserController {
 
     @Autowired
     CollectService collectService;
+    @Autowired
+    KafkaTemplate<String, String> kafkaTemplate;
+    @Autowired
+    ElasticDao elasticDao;
 
     //测试使用
     @RequestMapping(value = "hello", method = RequestMethod.GET)
@@ -67,53 +77,53 @@ public class UserController {
 
     @RequestMapping("comment")
     @ResponseBody
-    public MsgResult comment(HttpServletRequest request,Integer id,String content){
+    public MsgResult comment(HttpServletRequest request, Integer id, String content) {
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-        CmsAssert.AssertTrue(loginUser!=null,"请你先登陆账号");
+        CmsAssert.AssertTrue(loginUser != null, "请你先登陆账号");
 
-        int result = articleService.addComment(loginUser.getId(),id,content);
-        if (result>0){
-            return new MsgResult(1,"评论成功",null);
-        }else {
-            return new MsgResult(0,"评论失败",null);
+        int result = articleService.addComment(loginUser.getId(), id, content);
+        if (result > 0) {
+            return new MsgResult(1, "评论成功", null);
+        } else {
+            return new MsgResult(0, "评论失败", null);
         }
     }
 
     /**
      * 文章后面评论展示
+     *
      * @param request
      * @param page
      * @param articleId
      * @return
      */
     @RequestMapping("commentList")
-    public String commentList(HttpServletRequest request,@RequestParam(defaultValue = "1") int page,Integer articleId){
+    public String commentList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page, Integer articleId) {
 
-        PageInfo<Comment> pageInfo  = articleService.getCommentList(page,articleId);
-        request.setAttribute("pageInfo",pageInfo);
+        PageInfo<Comment> pageInfo = articleService.getCommentList(page, articleId);
+        request.setAttribute("pageInfo", pageInfo);
 
         return "article/comments";
     }
 
     /**
      * 获取全部评论
+     *
      * @param request
      * @param page
      * @return
      */
     @RequestMapping("userCommentList")
-    public String userCommentList(HttpServletRequest request,@RequestParam(defaultValue = "1") int page){
+    public String userCommentList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page) {
 
         //获取全部全部评论，未按照登陆人条件查询
-       // User loginUser = (User)request.getSession().getAttribute(ConstantClass.USER_KEY);
+        // User loginUser = (User)request.getSession().getAttribute(ConstantClass.USER_KEY);
 
-        PageInfo<Comment> pageInfo  = articleService.getComList(page);
-        request.setAttribute("pageInfo",pageInfo);
+        PageInfo<Comment> pageInfo = articleService.getComList(page);
+        request.setAttribute("pageInfo", pageInfo);
 
         return "user/commentList";
     }
-
-
 
 
     /**
@@ -133,40 +143,38 @@ public class UserController {
 
     @RequestMapping("collect")
     @ResponseBody
-  public MsgResult collect(HttpServletRequest request,Collect collect){
+    public MsgResult collect(HttpServletRequest request, Collect collect) {
 
-      //CmsAssert.AssertTrue(id>0, "id 不合法");
+        //CmsAssert.AssertTrue(id>0, "id 不合法");
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-        CmsAssert.AssertTrue(loginUser!=null,"亲 啊,你还没有登陆呢！！");
+        CmsAssert.AssertTrue(loginUser != null, "亲 啊,你还没有登陆呢！！");
 
-        if(collect.getName().length()>20){
-          collect.setName(collect.getName().substring(0,20)+"....");
+        if (collect.getName().length() > 20) {
+            collect.setName(collect.getName().substring(0, 20) + "....");
         }
         collect.setUserId(loginUser.getId());
-        int result =collectService.addcollect(collect);
-        CmsAssert.AssertTrue(result>0,"收藏失败了呢！！");
+        int result = collectService.addcollect(collect);
+        CmsAssert.AssertTrue(result > 0, "收藏失败了呢！！");
 
-        return new MsgResult(1,"收藏成功了呢",null);
+        return new MsgResult(1, "收藏成功了呢", null);
 
-  }
-
-
+    }
 
 
     /**
      * 发布图片
      */
     @GetMapping("postImg")
-        public String postImg(HttpServletRequest request){
+    public String postImg(HttpServletRequest request) {
         //获取所有频道
         List<Channel> channels = channelService.getChannelList();
-        request.setAttribute("channels",channels);
+        request.setAttribute("channels", channels);
 
         return "/article/postImg";
     }
 
     @PostMapping("postImg")
-    public MsgResult postImg(HttpServletRequest request,MultipartFile file[],
+    public MsgResult postImg(HttpServletRequest request, MultipartFile file[],
                              String desc[], Article article) throws IOException {
 
         //  获取用户的信息
@@ -174,7 +182,7 @@ public class UserController {
 
         List<Image> list = new ArrayList<>();
         //便利处理每个上传的图片，存入list中
-        for (int i=0;i<file.length&&i<desc.length;i++){
+        for (int i = 0; i < file.length && i < desc.length; i++) {
             String url = processFile(file[i]);
             Image image = new Image();
             image.setDesc(desc[i]);
@@ -190,10 +198,10 @@ public class UserController {
         //设置文章类型 是图片
         article.setArticleType(TypeEnum.IMG);
         int add = articleService.add(article);
-        if(add>0){
-            return new MsgResult(1,"恭喜呢，发布成功",null);
-        }else {
-            return  new MsgResult(2,"不好意思，发布失败了",null);
+        if (add > 0) {
+            return new MsgResult(1, "恭喜呢，发布成功", null);
+        } else {
+            return new MsgResult(2, "不好意思，发布失败了", null);
         }
     }
 
@@ -287,19 +295,18 @@ public class UserController {
         CmsAssert.AssertTrue(article != null, "该文章已经不存在");
         //获取当前用户的session key
         User loginUser = (User) request.getSession().getAttribute(ConstantClass.USER_KEY);
-        System.out.println("+++++++" + loginUser.getId() + "============");
-        System.out.println("+++++++" + loginUser + "============");
+//        System.out.println("+++++++" + loginUser.getId() + "============");
+//        System.out.println("+++++++" + loginUser + "============");
+//
+//        System.out.println("+++++++" + article + "++++++=====");
 
-        System.out.println("+++++++" + article + "++++++=====");
-//        +++++++57============
-//        +++++++User{id=57, username='wucaicai', password='41c810756567d3ef6c6fd2ebf8caf4f9', nickname='null', birthday=null, gender=1, locked=0, createTime=null, updateTime=null, url='', score=0, role=0}============
-//        +++++++Article{id=29, title='v', content='&nbsp;飞', picture='a29bde7b-6da0-473f-86ab-567950f9888d.jpg', channelId=null, channel=null, categoryId='null', category=null, userId=null, user=null, hits=0, hot=0, status=1, deleted=0, created='Sun Sep 22 21:00:46 CST 2019', updated=Mon Sep 23 14:10:00 CST 2019, commentCnt=1, articleType=0}++++++=====
-//       CmsAssert.AssertTrue(
-//                loginUser.getRole() == ConstantClass.USER_ROLE_ADMIN
-//                        || loginUser.getId() == article.getId()
-//                , "只有管理员和文章的作者能删除文章");
 
         int result = articleService.delete(id);
+        String jsonString = JSON.toJSONString(article);
+
+        kafkaTemplate.send("hot_articles", "del=" + jsonString);
+        elasticDao.deleteById(id);
+        System.out.println("es删除成功！！"+id);
         CmsAssert.AssertTrue(result > 0, "文章删除失败");
 
         return new MsgResult(1, "删除成功", null);
@@ -337,6 +344,10 @@ public class UserController {
         }
 
         int result = articleService.update(article);
+        String jsonString = JSON.toJSONString(article);
+        kafkaTemplate.send("hot_articles", "update=" + jsonString);
+            elasticDao.save(article);
+            System.err.println("es修改成功");
         if (result > 0) {
             return new MsgResult(1, "", null);
         } else {
@@ -373,6 +384,10 @@ public class UserController {
 
         article.setUserId(loginUser.getId());
         int result = articleService.add(article);
+        String jsonString = JSON.toJSONString(article);
+        kafkaTemplate.send("hot_articles", "add=" + jsonString);
+        elasticDao.save(article);
+        System.out.println("es添加成功！！！"+article.getId());
         if (result > 0) {
             return new MsgResult(1, "文章发布成功！！！", null);
         } else {

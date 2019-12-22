@@ -76,6 +76,7 @@ public class UserUtils {
         return resultBt;
     }
 
+    //生成start--end随机数字
     public static int getNum(int start,int end) {
         return (int)(Math.random()*(end-start+1)+start);
     }

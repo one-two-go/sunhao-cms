@@ -10,8 +10,13 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 <!--	加在redis 配置-->
-	<import resource="classpath:redis.xml"></import><!--	加在redis 配置-->
+	<import resource="classpath:redis.xml"></import>
+	<!--	加载Kafka消费者 配置-->
 	<import resource="classpath:consumer.xml"></import>
+	<import resource="classpath:producer.xml"></import>
+<!--	加载elasticsearch 配置-->
+	<import resource="classpath:es.xml"></import>
+
 	<!-- 1、注解扫描器 -->
 	<!-- todo -->
 	<context:component-scan base-package="com.sunhao" >

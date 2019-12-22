@@ -3,6 +3,8 @@ package service.kafka;
 import com.alibaba.fastjson.JSON;
 import com.sunhao.entity.Article;
 import com.sunhao.utils.FileUtilIO;
+import com.sunhao.utils.StringUtils;
+import com.sunhao.utils.UserUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,15 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.sound.midi.Soundbank;
 import java.io.File;
 
 /**
- * ÏîÄ¿Ãû³Æ£ºredistest
- * Àà Ãû ³Æ£ºPro
- * Àà Ãè Êö£ºTODO
- * ´´½¨Ê±¼ä£º2019/12/10 6:28 ÏÂÎç
- * ´´ ½¨ ÈË£ºsunhao
+ * é¡¹ç›®åç§°ï¼šredistest
+ * ç±» å ç§°ï¼šPro
+ * ç±» æ è¿°ï¼šç”Ÿäº§è€…  å‘é€æœ¬åœ°è·å–çš„æ–‡ç« åˆ°kafka
+ * åˆ›å»ºæ—¶é—´ï¼š2019/12/10 6:28 ä¸‹åˆ
+ * åˆ› å»º äººï¼šsunhao
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:producer.xml")
@@ -36,7 +39,7 @@ public class articles {
         File[] files = file.listFiles();
         for (File file2 :files){
 //            System.out.println(file2);
-            //»ñÈ¡ÎÄÕÂ±êÌâ
+            //è·å–æ–‡ç« æ ‡é¢˜
             String title = file2.getName().replace(".txt","");
             String content = FileUtilIO.readFile(file2, "utf8");
 //            System.out.println(content);
@@ -44,17 +47,19 @@ public class articles {
             article.setTitle(title);
             article.setContent(content);
 
-            //°Ñarticle ¶ÔÏó×ª»»³Éjson¶ÔÏó
+            //æŠŠarticle å¯¹è±¡è½¬æ¢æˆjsonå¯¹è±¡
             String jsonString = JSON.toJSONString(article);
             System.err.println(jsonString);
             JSON.parseObject(jsonString);
-            //JSON ¶ÔÏó×ª»»³ÉArticle¶ÔÏó
+            //JSON å¯¹è±¡è½¬æ¢æˆArticleå¯¹è±¡
 //            Article article = JSON.parseObject(jsonString, Article.class);
             kafkaTemplate.send("articles",jsonString);
+
         }
 
 
-//        kafkaTemplate.send("hhhh","ÎÒ²ÂµÄºÜ×¼µÄ");
+//        kafkaTemplate.send("hhhh","æˆ‘çŒœçš„å¾ˆå‡†çš„");
 
     }
+
 }

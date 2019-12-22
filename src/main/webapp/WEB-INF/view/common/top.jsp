@@ -25,9 +25,9 @@
 		<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
       </ul>
       
-      <form class="navbar-form navbar-left">
+      <form class="navbar-form navbar-left" action="/index" type="get">
         <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
+          <input type="text" class="form-control" name="key" placeholder="Search">
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
       </form>

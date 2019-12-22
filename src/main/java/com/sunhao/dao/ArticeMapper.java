@@ -52,13 +52,14 @@ public interface ArticeMapper {
 
     /**
      * 获取文章详情 不考虑状态
+     *
      * @param id
      * @return
      */
     Article getDetailById(Integer id);
 
     @Update("UPDATE cms_article SET status = #{status} WHERE id = #{id}")
-    int apply(@Param("id") int id, @Param("status")int status);
+    int apply(@Param("id") int id, @Param("status") int status);
 
     @Update("UPDATE cms_article SET hot=#{status} WHERE id = #{id}")
     int setHot(@Param("id") int id, @Param("status") int status);
@@ -66,10 +67,11 @@ public interface ArticeMapper {
     @Update("UPDATE cms_article SET title=#{title},content=#{content},"
             + "picture=#{picture},channel_id=#{channelId},"
             + "category_id=#{categoryId},status=0,updated=now() WHERE id=#{id}")
+    @SelectKey(statement = "select last_insert_id()", keyProperty = "id", before = false, resultType = Integer.class)
     int update(Article article);
 
     @Insert("REPLACE cms_favorite(user_id,article_id,created) values(#{userId},#{articleId},now())")
-    int favorite(@Param("userId") Integer userId,@Param("articleId") Integer articleId);
+    int favorite(@Param("userId") Integer userId, @Param("articleId") Integer articleId);
 
     List<Article> getImgArticles(int num);
 
@@ -84,4 +86,7 @@ public interface ArticeMapper {
 
     @Select("SELECT * FROM cms_comment ")
     List<Comment> getComList();
+
+    //查询所有发布文章
+    List<Article> findAll();
 }

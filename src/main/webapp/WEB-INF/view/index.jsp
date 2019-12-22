@@ -127,7 +127,7 @@
                     <c:forEach items="${hotList.list}" var="article" >
                         <div class=row style="padding-bottom:1px">
                             <hr width="88%" style="background-color:#D2691E;border:none;height:1px">
-                            <div class="col-md-2" style="text-align:right"><img height="80px" width="80px" src="/pic/${article.picture}" onerror="this.src='/resource/images/guest1.jpg'" class="img-rounded"></div>
+                            <div class="col-md-2" style="text-align:right"><img height="80px" width="80px" src="${article.picture}" onerror="this.src='/resource/images/guest1.jpg'" class="img-rounded"></div>
                             <div class="col-md-10">
                                 <a href="javascript:showArticle(${article.id})">${article.title}</a>
                                 <br><br>
@@ -142,19 +142,19 @@
 
                     <div class="row" style="text-align: center;padding-top:1px">
                         <hr width="88%" style="background-color:#D2691E;border:none;height:1px">
-
                         <ul class="pagination">
-                            <li><a href="/index?page=${hotList.prePage}">&laquo;</a></li>
-                            <c:forEach begin="${hotList.pageNum-2 > 1 ? hotList.pageNum-2:1}" end="${hotList.pageNum+2 > hotList.pages ? hotList.pages:hotList.pageNum+2}" varStatus="index">
+                            <li><a href="/index?page=${hotList.prePage}&key=${key}">&laquo;</a></li>
+                            <c:forEach begin="${hotList.pageNum-2 > 1 ? hotList.pageNum-2:1}"
+                                       end="${hotList.pageNum+2 > hotList.pages ? hotList.pages:hotList.pageNum+2}" varStatus="index">
                                 <c:if test="${hotList.pageNum!=index.index}">
-                                    <li><a href="/index?page=${index.index}">${index.index}</a></li>
+                                    <li><a href="/index?page=${index.index}&key=${key}">${index.index}</a></li>
                                 </c:if>
                                 <c:if test="${hotList.pageNum==index.index}">
-                                    <li><a href="/index?page=${index.index}"><strong> ${index.index} </strong> </a></li>
+                                    <li><a href="/index?page=${index.index}&key=${key}"><strong> ${index.index} </strong> </a></li>
                                 </c:if>
 
                             </c:forEach>
-                            <li><a href="/index?page=${hotList.nextPage}">&raquo;</a></li>
+                            <li><a href="/index?page=${hotList.nextPage}&key=${key}">&raquo;</a></li>
                         </ul>
                     </div>
                 </div>

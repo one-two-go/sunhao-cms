@@ -82,4 +82,8 @@
         ORDER BY created DESC
         LIMIT #{value }
     </select>
+
+    <select id="findAll" resultMap="ArticeMapper">
+        select * from cms_article WHERE deleted=0 AND status=1
+    </select>
 </mapper>
