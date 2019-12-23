@@ -24,14 +24,22 @@
 		<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
 		<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
       </ul>
-      
-      <form class="navbar-form navbar-left" action="/index" type="get">
-        <div class="form-group">
-          <input type="text" class="form-control" name="key" placeholder="Search">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-      </form>
-      
+<%--  页面搜索框    --%>
+<%--      <form class="navbar-form navbar-left" action="/index" type="get">--%>
+<%--        <div class="form-group">--%>
+<%--          <input type="text" class="form-control" name="key" placeholder="Search">--%>
+<%--        </div>--%>
+<%--        <button type="submit" class="btn btn-default">Submit</button>--%>
+<%--      </form>--%>
+
+	<form class="navbar-form navbar-left" action="/index" type="get">
+		<div class="form-group">
+			<input type="text" class="form-control" name="key" placeholder="Search">
+		</div>
+		<button type="submit" class="btn btn-default">Submit</button>
+	</form>
+
+
       <ul class="nav navbar-nav navbar-right">
        <li><a href="#"><img width="30px" height="30px" src="/resource/images/donghua.gif"/> </a></li>
         <c:choose>

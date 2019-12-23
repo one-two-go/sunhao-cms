@@ -178,4 +178,9 @@ public class ArticeServiceImpl implements ArticleService {
         return new PageInfo<Comment>(articeMapper.getComList());
     }
 
+    @Override
+    public void updateHits(Article article) {
+        articeMapper.updateHits(article);
+    }
+
 }

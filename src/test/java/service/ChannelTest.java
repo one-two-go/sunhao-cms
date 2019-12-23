@@ -14,7 +14,7 @@ import java.util.List;
  * 创建时间：2019/11/14 12:30 下午
  * 创 建 人：sunhao
  */
-public class ChannelTest  extends BaseTest{
+public class ChannelTest {
 
     @Autowired
     ChannelService ChannelService;

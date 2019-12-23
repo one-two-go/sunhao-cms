@@ -15,7 +15,7 @@ import java.util.List;
  * 创建时间：2019/11/14 1:33 下午
  * 创 建 人：sunhao
  */
-public class ArticleTest extends BaseTest {
+public class ArticleTest {
 
     @Autowired
     ArticleService ArticeService;

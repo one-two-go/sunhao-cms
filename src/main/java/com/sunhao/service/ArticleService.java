@@ -53,4 +53,6 @@ public interface ArticleService {
     PageInfo<Comment> getCommentList(int page, Integer articleId);
 
     PageInfo<Comment> getComList(int page);
+
+    void updateHits(Article article);
 }

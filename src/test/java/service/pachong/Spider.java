@@ -44,7 +44,7 @@ public class Spider {
                 for (Element element :articles){
                     String text = element.text();
 //                    System.out.println(text);
-                    FileUtilIO.writeFile("/Users/sunhao/Desktop/txt/"+title+".txt",text,"utf8");
+                    FileUtilIO.writeFile("/Users/sunhao/Desktop/txt/"+title+"666.txt",text,"utf8");
 
                 }
 

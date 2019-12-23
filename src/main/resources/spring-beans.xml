@@ -1,104 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
 
-<!--	加在redis 配置-->
-	<import resource="classpath:redis.xml"></import>
-	<!--	加载Kafka消费者 配置-->
-	<import resource="classpath:consumer.xml"></import>
-	<import resource="classpath:producer.xml"></import>
-<!--	加载elasticsearch 配置-->
-	<import resource="classpath:es.xml"></import>
+    <!--	加在redis 配置-->
+    <import resource="classpath:redis.xml"></import>
+    <!--	加载Kafka消费者 配置-->
+    <import resource="classpath:consumer.xml"></import>
+    <import resource="classpath:producer.xml"></import>
+    <!--	加载elasticsearch 配置-->
+    <import resource="classpath:es.xml"></import>
 
-	<!-- 1、注解扫描器 -->
-	<!-- todo -->
-	<context:component-scan base-package="com.sunhao" >
-		<!-- 排除要要扫描的controller -->
-		<context:exclude-filter type="annotation"
-			expression="org.springframework.stereotype.Controller" />
+	<!-- 定义线程池 注意,首次用这个标签会报错,因此我们要复制约束进来-->
+	<task:executor id="executor" pool-size="10" queue-capacity="10" rejection-policy="DISCARD_OLDEST" />
 
-	</context:component-scan>
+    <!-- 1、注解扫描器 -->
+    <!-- todo -->
+    <context:component-scan base-package="com.sunhao">
+        <!-- 排除要要扫描的controller -->
+        <context:exclude-filter type="annotation"
+                                expression="org.springframework.stereotype.Controller"/>
 
-	<!--2、 指定外部属性文件的位置 -->
-	<context:property-placeholder
-		location="classpath:db.properties" />
-	
+    </context:component-scan>
 
-	<!-- 3.使用druid数据源 连接池 -->
-	<bean id="dataSource" 
-		class="com.alibaba.druid.pool.DruidDataSource">
-		<property name="driverClassName" value="${jdbc.driver}">
-		</property>
-		<property name="url" value="${jdbc.url}">
-		</property>
-		<property name="username" value="${jdbc.username}">
-		</property>
-		<property name="password" value="${jdbc.password}">
-		</property>
-	</bean>
+    <!--2、 指定外部属性文件的位置 -->
+    <context:property-placeholder
+            location="classpath:db.properties"/>
 
 
-	<!--4、 配置mybatis SqlSessionFactory -->
-	<bean id="sqlSessionFactory"
-		class="org.mybatis.spring.SqlSessionFactoryBean" scope="singleton" autowire="default">
-		<!-- 注入数据源 -->
-		<property name="dataSource" ref="dataSource"></property>
-		<!-- 关联mybatis配置文件 -->
-		<!-- todo -->
-		<property name="configLocation" value="classpath:mybatis.xml"></property>
-	    <property name="mapperLocations" value="classpath:mybatis/*.xml"></property>
-	
-	</bean>
-
-	<!--5、 配置jdbc事务管理器 -->
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
-	</bean>
+    <!-- 3.使用druid数据源 连接池 -->
+    <bean id="dataSource"
+          class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="${jdbc.driver}">
+        </property>
+        <property name="url" value="${jdbc.url}">
+        </property>
+        <property name="username" value="${jdbc.username}">
+        </property>
+        <property name="password" value="${jdbc.password}">
+        </property>
+    </bean>
 
 
+    <!--4、 配置mybatis SqlSessionFactory -->
+    <bean id="sqlSessionFactory"
+          class="org.mybatis.spring.SqlSessionFactoryBean" scope="singleton" autowire="default">
+        <!-- 注入数据源 -->
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 关联mybatis配置文件 -->
+        <!-- todo -->
+        <property name="configLocation" value="classpath:mybatis.xml"></property>
+        <property name="mapperLocations" value="classpath:mybatis/*.xml"></property>
 
-	<!--6、 配置事务 transaction-manager:表示关联的事务管理器是谁 -->
-	<tx:advice transaction-manager="transactionManager"
-		id="txAdvice">
-		<!-- 事务属性配置 -->
-		<tx:attributes>
-			<!-- 以find.select get开头的方法为只读事务，用来提高数据库的性能 -->
-			<tx:method name="find*" read-only="true" />
-			<tx:method name="select*" read-only="true" />
-			<tx:method name="get*" read-only="true" />
-			<tx:method name="load*" read-only="true" />
-			<tx:method name="list*" read-only="true" />
-			<!-- 其他的方法为默认事务 -->
-			<tx:method name="*"  propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice>
-	<!-- 7、配置aop -->
-	<aop:config>
-		<!-- 配置切点表达式 -->
-		<!-- todo -->
-		<aop:pointcut 
-			expression="execution(* com.sunhao.service.*.*(..))" id="pointcut" />
-		<!-- 关联事务 -->
-		<aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut" />
+    </bean>
 
-	</aop:config>
+    <!--5、 配置jdbc事务管理器 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
 
-	<!--8 扫描mapper -->
 
-	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<!-- basePackage :mapper接口所在的包 -->
-		<!-- todo -->
-		<property name="basePackage" value="com.sunhao.dao"></property>
+    <!--6、 配置事务 transaction-manager:表示关联的事务管理器是谁 -->
+    <tx:advice transaction-manager="transactionManager"
+               id="txAdvice">
+        <!-- 事务属性配置 -->
+        <tx:attributes>
+            <!-- 以find.select get开头的方法为只读事务，用来提高数据库的性能 -->
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="load*" read-only="true"/>
+            <tx:method name="list*" read-only="true"/>
+            <!-- 其他的方法为默认事务 -->
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+    <!-- 7、配置aop -->
+    <aop:config>
+        <!-- 配置切点表达式 -->
+        <!-- todo -->
+        <aop:pointcut
+                expression="execution(* com.sunhao.service.*.*(..))" id="pointcut"/>
+        <!-- 关联事务 -->
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pointcut"/>
 
-	</bean>
+    </aop:config>
+
+    <!--8 扫描mapper -->
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!-- basePackage :mapper接口所在的包 -->
+        <!-- todo -->
+        <property name="basePackage" value="com.sunhao.dao"></property>
+
+    </bean>
 
 
 </beans>

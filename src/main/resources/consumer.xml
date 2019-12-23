@@ -50,14 +50,14 @@
 	<!-- 记得修改主题 -->
 	<bean id="containerProperties" class="org.springframework.kafka.listener.ContainerProperties">
 		<!-- 构造函数 就是 主题的参数值 -->
-		<constructor-arg value="hot_articles" />
+		<constructor-arg value="articles" />
 		<property name="messageListener" ref="messageListernerConsumerService" />
 	</bean>
 
 
 
 	<!--指定具体监听类的bean 这个类需要我们手工写-->
-	<bean id="messageListernerConsumerService" class="com.sunhao.kafka.ArticleListener" />
+	<bean id="messageListernerConsumerService" class="com.sunhao.kafka.ArticleListenerExam" />
 	
 	
 </beans>

@@ -21,7 +21,19 @@ public class DateUtils {
 		
 		
 	}
-	
+	//随机生成时间
+	public static Date randomHireday2() {
+		int startYear=2019;
+		int endYear=2019;
+		int year = (int)(Math.random()*(endYear-startYear+1))+startYear;	//随机年
+		int month= (int)(Math.random()*12)+1;								//随机月
+		Calendar c = Calendar.getInstance();				//创建Calendar对象
+		c.set(year, month, 0);								//设定日期
+		int dayOfMonth = c.get(Calendar.DAY_OF_MONTH);		//获取对应年月有几天
+		int day=(int)(Math.random()*dayOfMonth+1)	;		//产生随机日
+		Date hireday=java.sql.Date.valueOf(year+"-"+month+"-"+day);	//通过valueOf方法生成Date对象
+		return hireday;
+	}
 	
 	/**
 	 * 

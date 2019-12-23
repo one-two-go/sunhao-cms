@@ -45,6 +45,6 @@
 	<bean id="kafkaTemplate" class="org.springframework.kafka.core.KafkaTemplate">
 		<constructor-arg ref="producerFactory" />
 		<!--设置对应topic -->
-		<property name="defaultTopic" value="hot_articles" />
+		<property name="defaultTopic" value="articles" />
 	</bean>
 </beans>

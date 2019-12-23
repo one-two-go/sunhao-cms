@@ -89,4 +89,8 @@ public interface ArticeMapper {
 
     //查询所有发布文章
     List<Article> findAll();
+
+
+    @Update("update cms_article set hits = #{hits} where id = #{id}")
+    void updateHits(Article article);
 }
