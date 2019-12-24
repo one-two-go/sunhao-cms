@@ -53,69 +53,37 @@ public class indexController {
     @Autowired
     ElasticsearchTemplate elasticsearchTemplate;
 
-    /**
-     * 完成es的搜索
-//     */
-//    @GetMapping("index")
-//    public String Search(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page ){
-//        if(page==0){
-//            page=1;
-//        }
-//        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, page,
-//                ConstantClass.PAGE_SIZE, new String[]{"title"}, "id", key);
-//        List<Article> list = (List<Article>) selectObjects.getContent();
-//        PageInfo<Article> pageInfo = new PageInfo<>(list);
+
+    //页面搜索
+//    @GetMapping("/index1")
+//    public String index(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "3") Integer pageSize){
+//        long start = System.currentTimeMillis();
+//        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, 1, 5, new String[]{"title"}, "id", key);
+//        List list = selectObjects.getContent();
+//        PageInfo pageInfo = new PageInfo<>(list);
+//
 //        //当前页
 //        pageInfo.setPageNum(page);
 //        //每页显示多少条
-//        pageInfo.setPageSize(ConstantClass.PAGE_SIZE);
+//        pageInfo.setPageSize(pageSize);
 //        //总条数
 //        pageInfo.setTotal(selectObjects.getTotalElements());
 //        //总页数
 //        int total = (int) selectObjects.getTotalElements();
-//        int pageSize = ConstantClass.PAGE_SIZE;
-//        int pages = total%page==0?total/pageSize:total/pageSize+1;
+//        int pages = total%pageSize==0?total/pageSize:total/pageSize+1;
 //        pageInfo.setPages(pages);
-//        if (page == pages){
+//        if(page==pages){
 //            page = pages;
 //        }
-//        pageInfo.setPrePage(page-1);
+//        //上一页 和 下一页
 //        pageInfo.setNextPage(page+1);
+//        pageInfo.setPrePage(page-1);
 //        request.setAttribute("hotList",pageInfo);
 //        request.setAttribute("key",key);
+//        long end = System.currentTimeMillis();
+//        System.out.println("本次查询共耗时"+(end-start));
 //        return "index";
 //    }
-
-    //页面搜索
-    @GetMapping("/index")
-    public String index(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "3") Integer pageSize){
-        long start = System.currentTimeMillis();
-        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, 1, 5, new String[]{"title"}, "id", key);
-        List list = selectObjects.getContent();
-        PageInfo pageInfo = new PageInfo<>(list);
-
-        //当前页
-        pageInfo.setPageNum(page);
-        //每页显示多少条
-        pageInfo.setPageSize(pageSize);
-        //总条数
-        pageInfo.setTotal(selectObjects.getTotalElements());
-        //总页数
-        int total = (int) selectObjects.getTotalElements();
-        int pages = total%pageSize==0?total/pageSize:total/pageSize+1;
-        pageInfo.setPages(pages);
-        if(page==pages){
-            page = pages;
-        }
-        //上一页 和 下一页
-        pageInfo.setNextPage(page+1);
-        pageInfo.setPrePage(page-1);
-        request.setAttribute("hotList",pageInfo);
-        request.setAttribute("key",key);
-        long end = System.currentTimeMillis();
-        System.out.println("本次查询共耗时"+(end-start));
-        return "index";
-    }
 
     /**
      *

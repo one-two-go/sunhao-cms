@@ -6,6 +6,7 @@ import com.sunhao.entity.Article;
 import com.sunhao.utils.UserUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.MessageListener;
@@ -40,7 +41,17 @@ public class ArticleListener implements MessageListener<String, String> {
         } else if (jsonString.startsWith("add")){
             System.err.println(jsonString);
             redisTemplate.delete("hot_articles");
-        } else {
+        } else if(jsonString.startsWith("hits")){
+            String[] split = jsonString.split("=");
+            //查询这个id的数据
+            int id = Integer.parseInt(split[1]);
+            Article article = articeMapper.getArticleByid(id);
+            //点击量加1
+            article.setHits(article.getHits()+1);
+            //更新数据库
+            articeMapper.updateHits(article);
+
+        } else{
             Article article = JSON.parseObject(jsonString, Article.class);
             System.err.println(article);
             articeMapper.add(article);

@@ -12,6 +12,7 @@ import com.sunhao.service.ArticleService;
 import com.sunhao.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,37 +41,35 @@ public class ArticleController {
     RedisTemplate redisTemplate;
     @Autowired
     ThreadPoolTaskExecutor executor;
+    @Autowired
+    KafkaTemplate kafkaTemplate;
 
     @RequestMapping("showdetail")
     public String getArticleByid(HttpServletRequest request, Integer id) {
         Article article = articleService.getArticleByid(id);
-/**
- * 获取用户IP  Hits_${文章ID}_${用户IP地址}”为key，
- * 查询Redis里有没有该key，如果有key，则不做任何操作。如果没有，则使用Spring线程池异步执行数据库加1操作
- * ，并往Redis保存key为Hits_${文章ID}_${用户IP地址}，value为空值的记录，而且有效时长为5分钟。
- * Redis判断  Redis写入，设定有效时长
- * Spring线程池使用。
- * 异步执行数据库加1操作。
- */
-        //获取用户IP
-        String ip = request.getRemoteAddr();
-        String key = "Hits"+id+ip;
-//        查询Redis里有没有该key
-        String redisDate = (String) redisTemplate.opsForValue().get(key);
-        if (redisDate==null){
-//            则使用Spring线程池异步执行数据库加1操作
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-//                    异步执行数据库加1操作
-                    article.setHits(article.getHits()+1);
-                    articleService.updateHits(article);
-                    redisTemplate.opsForValue().set(key,"",5, TimeUnit.MINUTES);
-					System.err.println("点击量已经加1了"+"=="+key);
-                }
-            });
-        }
+// ##################################AAAAAAAAAA===========================
+//        //获取用户IP
+//        String ip = request.getRemoteAddr();
+//        String key = "Hits_"+id+"_"+ip;
+////        查询Redis里有没有该key
+//        String redisDate = (String) redisTemplate.opsForValue().get(key);
+//        if (redisDate==null){
+////            则使用Spring线程池异步执行数据库加1操作
+//            executor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+////                    异步执行数据库加1操作
+//                    article.setHits(article.getHits()+1);
+//                    articleService.updateHits(article);
+//                    redisTemplate.opsForValue().set(key,"",5, TimeUnit.MINUTES);
+//					System.err.println("点击量已经加1了"+"=="+key);
+//                }
+//            });
+//        }
 
+        /**
+         *         当用户浏览文章时，往Kafka发送文章ID，在消费端获取文章ID，再执行数据库加1操作
+         */kafkaTemplate.send("articles","hits="+id);
 
         CmsAssert.AssertTrueHtml(article != null, "文章不存在");
         request.setAttribute("article", article);
