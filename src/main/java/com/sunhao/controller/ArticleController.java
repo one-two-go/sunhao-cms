@@ -37,10 +37,14 @@ public class ArticleController {
     ArticleService articleService;
     @Autowired
     CategoryService categoryService;
+
     @Autowired
     RedisTemplate redisTemplate;
     @Autowired
     ThreadPoolTaskExecutor executor;
+    @Autowired
+    ArticeMapper articeMapper;
+
     @Autowired
     KafkaTemplate kafkaTemplate;
 
@@ -65,11 +69,36 @@ public class ArticleController {
 //					System.err.println("点击量已经加1了"+"=="+key);
 //                }
 //            });
-//        }
+//
 
-        /**
-         *         当用户浏览文章时，往Kafka发送文章ID，在消费端获取文章ID，再执行数据库加1操作
-         */kafkaTemplate.send("articles","hits="+id);
+/**
+ * 为CMS系统文章最终页（详情页），每访问一次就同时往文章表的浏览量字段加1，
+ * 如果一篇文章集中一时刻上百万次浏览，就会给数据库造成压力。现
+ * 在请你利用Redis提高性能，当用户浏览文章时，将“Hits_${文章ID}_${用户IP地址}”为key，
+ * 查询Redis里有没有该key，如果有key，则不做任何操作。如果没有，
+ * 则使用Spring线程池异步执行数据库加1操作，并往Redis保存key为Hits_${文章ID}_${用户IP地址}，
+ * value为空值的记录，而且有效时长为5分钟。
+ * 获取用户IP。（4分）
+ * Redis判断 [核心]（4分）
+ * Redis写入[核心] （4分），设定有效时长（4分）
+ * Spring线程池使用。[核心]（8分）
+ * 异步执行数据库加1操作。（4分）
+ */
+        String ip = request.getRemoteAddr();
+        String key ="Hits_" + id + "_" + ip;
+        String redisData = (String) redisTemplate.opsForValue().get(key);
+        if (redisData==null){
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    Article article = articeMapper.getArticleByid(id);
+                    article.setHits(article.getHits()+1);
+                    articeMapper.updateHits(article);
+                    redisTemplate.opsForValue().set(key,article,5,TimeUnit.MINUTES);
+                }
+            });
+        }
+
 
         CmsAssert.AssertTrueHtml(article != null, "文章不存在");
         request.setAttribute("article", article);

@@ -23,7 +23,7 @@ import java.util.Objects;
 @Document(indexName = "cms_article",type = "article")
 public class Article implements Serializable {
     /**
-     *
+     *使用ElasticSearch将文章表所有文章建立全文索引。其中title(标题)字段权重最高。
      */
     private static final long serialVersionUID = 6320126833474686896L;
     @Id

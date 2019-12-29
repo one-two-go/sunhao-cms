@@ -1,7 +1,7 @@
 package com.sunhao.controller;
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
-import com.sunhao.common.ConstantClass;
 import com.sunhao.dao.ElasticDao;
 import com.sunhao.entity.Article;
 import com.sunhao.entity.Category;
@@ -12,17 +12,15 @@ import com.sunhao.service.CategoryService;
 import com.sunhao.service.ChannelService;
 import com.sunhao.service.LinkService;
 import com.sunhao.utils.HLUtils;
-import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -54,36 +52,36 @@ public class indexController {
     ElasticsearchTemplate elasticsearchTemplate;
 
 
-    //页面搜索
-//    @GetMapping("/index1")
-//    public String index(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "3") Integer pageSize){
-//        long start = System.currentTimeMillis();
-//        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, 1, 5, new String[]{"title"}, "id", key);
-//        List list = selectObjects.getContent();
-//        PageInfo pageInfo = new PageInfo<>(list);
-//
-//        //当前页
-//        pageInfo.setPageNum(page);
-//        //每页显示多少条
-//        pageInfo.setPageSize(pageSize);
-//        //总条数
-//        pageInfo.setTotal(selectObjects.getTotalElements());
-//        //总页数
-//        int total = (int) selectObjects.getTotalElements();
-//        int pages = total%pageSize==0?total/pageSize:total/pageSize+1;
-//        pageInfo.setPages(pages);
-//        if(page==pages){
-//            page = pages;
-//        }
-//        //上一页 和 下一页
-//        pageInfo.setNextPage(page+1);
-//        pageInfo.setPrePage(page-1);
-//        request.setAttribute("hotList",pageInfo);
-//        request.setAttribute("key",key);
-//        long end = System.currentTimeMillis();
-//        System.out.println("本次查询共耗时"+(end-start));
-//        return "index";
-//    }
+//    页面搜索
+    @GetMapping("/index")
+    public String index(HttpServletRequest request,String key,@RequestParam(defaultValue = "1")Integer page,@RequestParam(defaultValue = "3") Integer pageSize){
+        long start = System.currentTimeMillis();
+        AggregatedPage<?> selectObjects = HLUtils.selectObjects(elasticsearchTemplate, Article.class, 1, 5, new String[]{"title"}, "id", key);
+        List list = selectObjects.getContent();
+        PageInfo pageInfo = new PageInfo<>(list);
+
+        //当前页
+        pageInfo.setPageNum(page);
+        //每页显示多少条
+        pageInfo.setPageSize(pageSize);
+        //总条数
+        pageInfo.setTotal(selectObjects.getTotalElements());
+        //总页数
+        int total = (int) selectObjects.getTotalElements();
+        int pages = total%pageSize==0?total/pageSize:total/pageSize+1;
+        pageInfo.setPages(pages);
+        if(page==pages){
+            page = pages;
+        }
+        //上一页 和 下一页
+        pageInfo.setNextPage(page+1);
+        pageInfo.setPrePage(page-1);
+        request.setAttribute("hotList",pageInfo);
+        request.setAttribute("key",key);
+        long end = System.currentTimeMillis();
+        System.out.println("本次查询共耗时"+(end-start));
+        return "index";
+    }
 
     /**
      *
